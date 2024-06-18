@@ -1,0 +1,55 @@
+<div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title text-center">Register</h2>
+            <form (ngSubmit)="onSubmit()">
+              <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" [(ngModel)]="username" name="username" required>
+              </div>
+              <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password" required>
+              </div>
+              <div class="form-group">
+                <label for="firstName">First Name:</label>
+                <input type="text" class="form-control" id="firstName" [(ngModel)]="firstName" name="firstName" required>
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name:</label>
+                <input type="text" class="form-control" id="lastName" [(ngModel)]="lastName" name="lastName" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" [(ngModel)]="email" name="email" required>
+              </div>
+              <div class="form-group">
+                <label for="likedGames">Liked Games:</label>
+                <input type="text" class="form-control" id="likedGames" [(ngModel)]="likedGames" name="likedGames">
+              </div>
+              <div class="form-group">
+                <label for="preferredRole">Preferred Role:</label>
+                <input type="text" class="form-control" id="preferredRole" [(ngModel)]="preferredRole" name="preferredRole">
+              </div>
+              <div class="form-group">
+                <label for="nationality">Nationality:</label>
+                <input type="text" class="form-control" id="nationality" [(ngModel)]="nationality" name="nationality">
+              </div>
+              <div class="form-group">
+                <label for="avatarUrl">Avatar URL:</label>
+                <input type="text" class="form-control" id="avatarUrl" [(ngModel)]="avatarUrl" name="avatarUrl" required>
+              </div>
+              <div class="form-group">
+                <label for="userRole">User Role:</label>
+                <input type="text" class="form-control" id="userRole" [(ngModel)]="userRole" name="userRole">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

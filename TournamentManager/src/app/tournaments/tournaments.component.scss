@@ -1,0 +1,34 @@
+.container {
+    padding: 20px;
+  }
+  
+  .search-bar {
+    margin-bottom: 20px;
+  }
+  
+  .search-bar input {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+  }
+  
+  .tournament-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .tournament-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
+    width: calc(33.333% - 16px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+  

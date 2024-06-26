@@ -1,0 +1,17 @@
+<div class="container-fluid">
+  <form class="d-flex m3-3" role="search" (submit)="onSearch($event)">
+    <input [(ngModel)]="searchTerm" name="search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+  </form>
+
+  <div *ngFor="let tournament of filteredTournaments" class="mt-4">
+    <div class="card p-5 shadow-sm mb-3" style="width: 100%; max-width: 900px;">
+      <img [src]="tournament.avatar" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h4 class="card-title text-light">{{tournament.name}} - {{tournament.game.name}}</h4>
+        <p class="card-text text-light">{{tournament.description}}</p>
+        <p class="card-text"><small class="text-body-secondary">{{tournament.startingDate}} {{tournament.prize}}</small></p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div class="container">
+    <div class="search-bar">
+      <input [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="Cerca tornei..." />
+    </div>
+    <div class="tournament-list">
+      <div *ngFor="let tournament of tournaments" class="tournament-card">
+        <h2>{{ tournament.name }}</h2>
+        <p>{{ tournament.description }}</p>
+        <!-- Aggiungere altre informazioni del torneo se necessario -->
+      </div>
+    </div>
+    <button (click)="createTournament()">Crea Torneo</button>
+  </div>
+  

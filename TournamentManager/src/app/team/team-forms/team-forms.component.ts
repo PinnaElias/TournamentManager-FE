@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TeamService } from '../team.service';
 import { Game } from 'src/app/models/game.model';
 import { CreateTeamRequestBody, UpdateTeamRequestBody } from 'src/app/models/team.model';
+import { GameService } from 'src/app/game/game.service';
 
 @Component({
   selector: 'app-team-form',
@@ -10,10 +11,14 @@ import { CreateTeamRequestBody, UpdateTeamRequestBody } from 'src/app/models/tea
   styleUrls: ['./team-forms.component.scss']
 })
 export class TeamFormComponent implements OnInit {
-  teamForm: FormGroup;
-  games: Game[]; // Carica i giochi disponibili
+  teamForm!: FormGroup;
+  games: Game[] = []; 
 
-  constructor(private fb: FormBuilder, private teamService: TeamService) { }
+  constructor(
+    private fb: FormBuilder,
+    private teamService: TeamService,
+    private gameService: GameService  
+  ) { }
 
   ngOnInit(): void {
     this.teamForm = this.fb.group({
@@ -24,12 +29,19 @@ export class TeamFormComponent implements OnInit {
       nationality: ['', Validators.required]
     });
 
-    // Carica i giochi disponibili
+    // Carica i giochi disponibili al caricamento del componente
     this.loadGames();
   }
 
   loadGames(): void {
-    // Implementa la logica per caricare i giochi
+    this.gameService.getAllGames().subscribe(
+      (data) => {
+        this.games = data.content;  // Salva l'elenco dei giochi nell'array games
+      },
+      (error) => {
+        console.error('Error loading games:', error);
+      }
+    );
   }
 
   onSubmit(): void {

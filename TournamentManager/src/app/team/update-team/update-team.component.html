@@ -1,0 +1,23 @@
+<!-- update-team.component.html -->
+
+<h2>Update Team</h2>
+
+<form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="name">Name:</label>
+    <input type="text" id="name" formControlName="name">
+  </div>
+  <div>
+    <label for="avatar">Avatar URL:</label>
+    <input type="text" id="avatar" formControlName="avatar">
+  </div>
+  <div>
+    <label for="game">Game:</label>
+    <input type="text" id="game" formControlName="game">
+  </div>
+  <div>
+    <label for="nationality">Nationality:</label>
+    <input type="text" id="nationality" formControlName="nationality">
+  </div>
+  <button type="submit" [disabled]="updateForm.invalid">Update Team</button>
+</form>

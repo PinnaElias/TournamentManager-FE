@@ -14,6 +14,10 @@ import { TournamentsComponent } from './tournaments/tournaments.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { TeamFormComponent } from './team/team-forms/team-forms.component';
 import { GameComponent } from './game/game.component';
+import { TournamentComponent } from './tournament/tournament.component';
+import { TeamComponent } from './team/team.component';
+import { CreateTeamComponent } from './team/create-team/create-team.component';
+import { UpdateTeamComponent } from './team/update-team/update-team.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,11 @@ import { GameComponent } from './game/game.component';
     NavbarComponent,
     TournamentsComponent,
     TeamFormComponent,
-    GameComponent
+    GameComponent,
+    TournamentComponent,
+    TeamComponent,
+    CreateTeamComponent,
+    UpdateTeamComponent
   ],
   imports: [
     BrowserModule,

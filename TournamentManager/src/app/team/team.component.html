@@ -1,0 +1,19 @@
+<!-- teams.component.html -->
+
+<h1>Teams</h1>
+
+<div *ngIf="teams">
+  <ul>
+    <li *ngFor="let team of teams">
+      <p>{{ team.name }}</p>
+      <p>{{ team.avatar }}</p>
+      <!-- Aggiungi altre informazioni del team che desideri visualizzare -->
+
+      <!-- Form di aggiornamento visibile solo per il team dell'utente loggato -->
+      <app-update-team *ngIf="team.id === currentUser.teamId"></app-update-team>
+    </li>
+  </ul>
+</div>
+
+<!-- Form di creazione visibile solo per l'utente loggato -->
+<app-create-team *ngIf="currentUser.teamId"></app-create-team>

@@ -12,6 +12,7 @@ import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { TournamentsComponent } from './tournaments/tournaments.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
+import { TeamFormsComponent } from './team/team-forms/team-forms.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     RegisterComponent,
     HomeComponent,
     NavbarComponent,
-    TournamentsComponent
+    TournamentsComponent,
+    TeamFormsComponent
   ],
   imports: [
     BrowserModule,

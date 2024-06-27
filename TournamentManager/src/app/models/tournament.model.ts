@@ -1,6 +1,7 @@
 import { Game } from './game.model';
 import { Team } from './team.model';
 import { User } from './user.model';
+import { Bracket } from './bracket.model';
 
 export interface Tournament {
   id: string;

@@ -1,5 +1,6 @@
 import { Game } from "./game.model";
 import { User } from "./user.model";
+import { Tournament } from "./tournament.model";
 
 export interface CreateTeamRequestBody {
     name: string;

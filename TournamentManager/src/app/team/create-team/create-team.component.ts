@@ -3,7 +3,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TeamService } from '../team.service'; // Assicurati di importare correttamente il servizio TeamService
+import { TeamService } from '../team.service';
 import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/auth/auth.service';
 

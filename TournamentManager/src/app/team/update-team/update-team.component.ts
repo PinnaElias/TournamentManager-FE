@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamService } from '../team.service';
 import { Team } from 'src/app/models/team.model';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-update-team',

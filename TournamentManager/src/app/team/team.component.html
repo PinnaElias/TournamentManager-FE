@@ -1,19 +1,31 @@
-<!-- teams.component.html -->
+<div class="container-fluid">
+  <h1 class="text-light">Teams</h1>
 
-<h1>Teams</h1>
+  <div *ngIf="teams" class="d-flex flex-column">
+    <div class="row">
+      <div class="col-12" *ngFor="let team of teams">
+        <div class="card mb-4 shadow-sm">
+          <img [src]="team.avatar" class="card-img-top" alt="Team Avatar">
+          <div class="card-body">
+            <h5 class="card-title text-light">{{ team.name }}</h5>
+            <p class="card-text text-light">{{ team.nationality }} - {{ team.game }}</p>
+            <h4 class="card-text text-light">
+              Members:
+              <span *ngFor="let member of team.members; let i = index">
+                {{ member.username }}{{ i !== team.members.length - 1 ? ', ' : '' }}
+              </span>
+            </h4>
+            <!-- Form di aggiornamento visibile solo per il team dell'utente loggato -->
+            <app-update-team *ngIf="currentUser && team.id === currentUser.teamId"></app-update-team>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div *ngIf="teams">
-  <ul>
-    <li *ngFor="let team of teams">
-      <p>{{ team.name }}</p>
-      <p>{{ team.avatar }}</p>
-      <!-- Aggiungi altre informazioni del team che desideri visualizzare -->
-
-      <!-- Form di aggiornamento visibile solo per il team dell'utente loggato -->
-      <app-update-team *ngIf="team.id === currentUser.teamId"></app-update-team>
-    </li>
-  </ul>
+  <!-- Bottone per la creazione di un nuovo team -->
+   <!--(click)="navigateToCreateTeam()" a riga 27, a fianco alla-->
+  <div class="mt-4">
+    <button *ngIf="currentUser && currentUser.teamId" class="btn btn-primary" >Create Team</button>
+  </div>
 </div>
-
-<!-- Form di creazione visibile solo per l'utente loggato -->
-<app-create-team *ngIf="currentUser.teamId"></app-create-team>

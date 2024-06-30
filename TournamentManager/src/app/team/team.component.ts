@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { TeamService } from './team.service';
 import { Team } from '../models/team.model';
-import { CreateTeamRequestBody } from '../models/team.model';
-import { UpdateTeamRequestBody } from '../models/team.model';
-import { DeleteTeamResponseBody } from '../models/team.model';
+import { CreateTeamRequestBody, UpdateTeamRequestBody } from '../models/team.model';
 import { AuthService } from '../auth/auth.service';
+import { User } from '../models/user.model';
 
 @Component({
   selector: 'app-teams',
@@ -14,7 +13,7 @@ import { AuthService } from '../auth/auth.service';
 export class TeamsComponent implements OnInit {
   isExpanded = false;
   teams: Team[] = [];
-  currentUser: any;  // Assicurati di usare l'interfaccia corretta per currentUser
+  currentUser: User | null = null;
 
   constructor(
     private teamService: TeamService,

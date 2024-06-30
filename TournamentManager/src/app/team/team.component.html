@@ -1,13 +1,13 @@
 <div class="container-fluid">
 
- <!-- Bottone per la creazione di un nuovo team -->
- <div class="mt-4">
-  <a  *ngIf="currentUser?.team?.id" class="btn btn-primary" [routerLink]="['/team-create']">Create Team</a>
-</div>
+  <!-- Bottone per la creazione di un nuovo team -->
+  <div class="mt-4">
+    <a *ngIf="currentUser && !currentUser.team?.id" class="btn btn-success" [routerLink]="['/team-create']">Create Team</a>
+  </div>
 
   <!-- Bottone per l'aggiornamento del team dell'utente loggato -->
   <div class="mt-4" *ngIf="currentUser?.team?.id">
-    <a class="btn btn-primary" [routerLink]="['/team-update', currentUser.team.id]">Update Team</a>
+    <a class="btn btn-danger" [routerLink]="['/team-update', currentUser?.team?.id]">Update Team</a>
   </div>
 
   <button class="btn btn-primary mb-3" (click)="isExpanded = !isExpanded">

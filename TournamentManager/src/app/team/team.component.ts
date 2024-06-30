@@ -12,7 +12,7 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./team.component.scss']
 })
 export class TeamsComponent implements OnInit {
-
+  isExpanded = false;
   teams: Team[] = [];
   currentUser: any; // Dichiarazione di currentUser, è importante definire il tipo corretto
 

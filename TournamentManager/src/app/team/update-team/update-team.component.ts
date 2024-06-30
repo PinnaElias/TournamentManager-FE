@@ -10,7 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-update-team',
   templateUrl: './update-team.component.html',
-  styleUrls: ['./update-team.component.css']
+  styleUrls: ['./update-team.component.scss']
 })
 export class UpdateTeamComponent implements OnInit {
 

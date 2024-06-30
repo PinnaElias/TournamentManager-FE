@@ -2,7 +2,7 @@ import { Game } from './game.model';
 import { Team } from './team.model';
 
 export interface User {
-  id: string;
+  id?: string;
   password: string;
   username: string;
   firstName: string;
@@ -10,7 +10,7 @@ export interface User {
   avatarUrl: string;
   email: string;
   userRole: UserRole;
-  likedGames: Game[];
+  likedGames?: Game[];
   team: Team;
   preferredRole: Role;
   nationality: string;
@@ -27,7 +27,7 @@ export interface CreateUserRequestBody {
   preferredRole?: Role;
   nationality?: string;
   avatarUrl: string;
-  userRole: UserRole;
+  userRole?: UserRole;  // userRole è facoltativo qui, perché verrà impostato a "USER" di default
 }
 
 export interface UpdateUserRequestBody {
@@ -47,11 +47,12 @@ export interface UpdateUserRequestBody {
 export enum UserRole {
   USER = 'USER',
   ADMIN = 'ADMIN',
-  // Aggiungi altri ruoli se necessario
 }
 
 export enum Role {
-  LEADER = 'LEADER',
-  MEMBER = 'MEMBER',
-  // Aggiungi altri ruoli se necessario
+  OFFENSIVE = 'OFFENSIVE',
+  DEFENSIVE = 'DEFENSIVE',
+  SUPPORT = 'SUPPORT',
+  CARRY = 'CARRY',
+  FLEXIBLE = 'FLEXIBLE'
 }

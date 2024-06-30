@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { User } from '../models/user.model';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { CreateUserRequestBody, User, UserRole } from '../models/user.model';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -19,17 +19,31 @@ export class AuthService {
     return this.http.post<any>(this.loginUrl, { email, password });
   }
 
-  register(user: any): Observable<any> {
-    return this.http.post<any>(this.registerUrl, user);
+  register(user: CreateUserRequestBody): Observable<any> {
+    const userWithDefaultRole: CreateUserRequestBody = { ...user, userRole: UserRole.USER };
+    return this.http.post<any>(this.registerUrl, userWithDefaultRole).pipe(
+      catchError(this.handleError)
+    );
   }
 
   getCurrentUser(): Observable<User> {
     return this.http.get<User>(this.currentUserUrl).pipe(
-      catchError(error => {
-        // Gestisci gli errori qui, ad esempio logga l'errore
-        console.error('Error fetching current user:', error);
-        throw error; // Rilancia l'errore per gestirlo nel componente chiamante
-      })
+      catchError(this.handleError)
     );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'An unknown error occurred!';
+    if (error.error) {
+      if (error.error.message) {
+        errorMessage = error.error.message;
+      } else if (typeof error.error === 'string') {
+        errorMessage = error.error;
+      }
+    } else {
+      errorMessage = error.message;
+    }
+    console.error('An error occurred:', errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 }

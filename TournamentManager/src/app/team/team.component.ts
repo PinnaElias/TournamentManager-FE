@@ -14,22 +14,23 @@ import { AuthService } from '../auth/auth.service';
 export class TeamsComponent implements OnInit {
   isExpanded = false;
   teams: Team[] = [];
-  currentUser: any; // Dichiarazione di currentUser, è importante definire il tipo corretto
+  currentUser: any;  // Assicurati di usare l'interfaccia corretta per currentUser
 
   constructor(
     private teamService: TeamService,
-    private authService: AuthService // Inietta AuthService nel costruttore
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
     this.loadTeams();
-    this.loadCurrentUser(); // Carica l'utente corrente all'inizio
+    this.loadCurrentUser();
   }
 
   loadTeams(): void {
     this.teamService.getAllTeams().subscribe(
       page => {
         this.teams = page.content;
+        console.log('Teams:', this.teams);  // Debugging
       },
       error => {
         console.error('Error loading teams:', error);
@@ -41,6 +42,8 @@ export class TeamsComponent implements OnInit {
     this.authService.getCurrentUser().subscribe(
       user => {
         this.currentUser = user;
+        console.log('Current User:', this.currentUser);  // Debugging
+        console.log('Current User Team ID:', this.currentUser?.team?.id);  // Debugging
       },
       error => {
         console.error('Error getting current user:', error);

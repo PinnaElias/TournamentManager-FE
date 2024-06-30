@@ -1,49 +1,50 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CreateUserRequestBody, Role, UserRole } from '../models/user.model';
 import { AuthService } from '../auth/auth.service';
-import { FormsModule } from '@angular/forms';
-
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   username: string = '';
   password: string = '';
   firstName: string = '';
   lastName: string = '';
   email: string = '';
-  likedGames: string = '';
-  preferredRole: string = '';
+  preferredRole: Role = Role.OFFENSIVE;  // Valore di default
   nationality: string = '';
   avatarUrl: string = '';
-  userRole: string = '';
+  roles: Role[] = [Role.OFFENSIVE, Role.DEFENSIVE, Role.SUPPORT, Role.CARRY, Role.FLEXIBLE];
+  userRole: UserRole = UserRole.USER;  // Impostato a "USER" per default
+  errorMessage: string = '';  // Aggiunto per gestire i messaggi di errore
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {}
 
   onSubmit(): void {
-    const user = {
+    const newUser: CreateUserRequestBody = {
       username: this.username,
       password: this.password,
       firstName: this.firstName,
       lastName: this.lastName,
       email: this.email,
-      likedGames: this.likedGames.split(',').map(game => game.trim()), // Converti in lista di giochi
       preferredRole: this.preferredRole,
       nationality: this.nationality,
       avatarUrl: this.avatarUrl,
-      userRole: this.userRole
+      userRole: this.userRole,  // USER è predefinito
     };
 
-    this.authService.register(user).subscribe(
-      response => {
-        // Gestisci la risposta del backend (ad esempio, naviga alla pagina di login)
-        console.log('Registration successful', response);
+    this.authService.register(newUser).subscribe({
+      next: () => {
+        this.router.navigate(['/login']);
       },
-      error => {
-        // Gestisci l'errore (ad esempio, mostra un messaggio di errore)
-        console.error('Registration failed', error);
+      error: (err) => {
+        console.error('Registration failed', err);
+        this.errorMessage = err.message || 'Registration failed. Please try again.';
       }
-    );
+    });
   }
 }

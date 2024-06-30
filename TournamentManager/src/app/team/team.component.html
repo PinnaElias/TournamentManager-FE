@@ -1,21 +1,27 @@
 <div class="container-fluid">
 
-  <!-- Bottone per la creazione di un nuovo team -->
-  <div class="mt-4">
-    <a *ngIf="currentUser && !currentUser.team?.id" class="btn btn-success" [routerLink]="['/team-create']">Create Team</a>
+  <!-- Bottoni per la creazione e aggiornamento del team -->
+  <div class="mt-4 d-flex justify-content-between">
+    <!-- Bottone per la creazione di un nuovo team -->
+    <div *ngIf="currentUser && !currentUser.team?.id">
+      <a class="btn btn-success btn-lg" [routerLink]="['/team-create']">Create Team</a>
+    </div>
+
+    <!-- Bottone per l'aggiornamento del team dell'utente loggato -->
+    <div *ngIf="currentUser?.team?.id">
+      <a class="btn btn-danger btn-lg" [routerLink]="['/team-update', currentUser?.team?.id]">Update Team</a>
+    </div>
   </div>
 
-  <!-- Bottone per l'aggiornamento del team dell'utente loggato -->
-  <div class="mt-4" *ngIf="currentUser?.team?.id">
-    <a class="btn btn-danger" [routerLink]="['/team-update', currentUser?.team?.id]">Update Team</a>
+  <!-- Bottone per espandere o ridurre la lista dei team -->
+  <div class="mt-4 d-flex justify-content-center">
+    <button class="btn btn-primary btn-lg" (click)="isExpanded = !isExpanded">
+      {{ isExpanded ? 'Collapse' : 'Expand' }} Teams
+    </button>
   </div>
-
-  <button class="btn btn-primary mb-3" (click)="isExpanded = !isExpanded">
-    {{ isExpanded ? 'Collapse' : 'Expand' }} Teams
-  </button>
 
   <div *ngIf="isExpanded">
-    <h1 class="text-light">Teams</h1>
+    <h1 class="text-light mt-4">Teams</h1>
 
     <div *ngIf="teams.length > 0" class="d-flex flex-column">
       <div class="row">

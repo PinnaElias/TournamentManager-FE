@@ -1,1 +1,16 @@
-<p>bracket works!</p>
+<div class="bracket-container">
+    <h1>Bracket</h1>
+    <div *ngIf="bracket">
+      <h2>{{ bracket.tournament?.name }}</h2>
+      <div class="bracket">
+        <!-- Implement the bracket visualization based on bracket data -->
+        <div *ngFor="let participant of bracket.participants">
+          <p>{{ participant.name }}</p>
+        </div>
+      </div>
+      <div *ngIf="bracket.winner">
+        <h3>Winner: {{ bracket.winner.name }}</h3>
+      </div>
+    </div>
+  </div>
+  

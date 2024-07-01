@@ -15,9 +15,10 @@ import { GameComponent } from './game/game.component';
 import { UpdateTeamComponent } from './team/update-team/update-team.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TeamsComponent } from './team/team.component';
-import { TournamentsComponent } from './tournaments/tournaments.component';
+import { TournamentComponent } from './tournaments/tournaments.component';
 import { CreateTeamComponent } from './team/create-team/create-team.component';
 import { BracketComponent } from './bracket/bracket.component';
+import { MatchComponent } from './match/match.component';
 
 @NgModule({
   declarations: [
@@ -26,12 +27,13 @@ import { BracketComponent } from './bracket/bracket.component';
     RegisterComponent,
     HomeComponent,
     NavbarComponent,
-    TournamentsComponent,
+    TournamentComponent,
     GameComponent,
     CreateTeamComponent,
     UpdateTeamComponent,
     TeamsComponent,
-    BracketComponent
+    BracketComponent,
+    MatchComponent
   ],
   imports: [
     BrowserModule,

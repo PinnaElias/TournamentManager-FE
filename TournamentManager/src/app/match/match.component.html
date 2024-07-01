@@ -1,0 +1,121 @@
+<!-- src/app/components/match/match.component.html -->
+
+<div class="match-container">
+    <h1>Matches</h1>
+  
+    <!-- List of matches -->
+    <div *ngFor="let match of matches">
+      <div class="match-card">
+        <p><strong>Date:</strong> {{ match.startingDate | date }} {{ match.startingTime | date:'shortTime' }}</p>
+        <p><strong>Teams:</strong> {{ match.teamASide.name }} vs {{ match.teamBSide.name }}</p>
+        <p><strong>Score:</strong> {{ match.teamAScore }} - {{ match.teamBScore }}</p>
+        <p><strong>Status:</strong> {{ match.matchState }}</p>
+        <button (click)="openEditMatchModal(match)">Edit</button>
+        <button (click)="deleteMatch(match.id)">Delete</button>
+      </div>
+    </div>
+  
+    <!-- Create Match Button -->
+    <button (click)="openCreateMatchModal()">Create Match</button>
+  
+    <!-- Create Match Modal -->
+    <div class="modal" [ngClass]="{'show': isCreateModalOpen}" id="createMatchModal">
+      <div class="modal-content">
+        <h2>Create Match</h2>
+        <form (ngSubmit)="createMatch()" #createMatchForm="ngForm">
+          <label for="startingDate">Starting Date</label>
+          <input type="date" id="startingDate" name="startingDate" [(ngModel)]="newMatch.startingDate" required />
+  
+          <label for="startingTime">Starting Time</label>
+          <input type="time" id="startingTime" name="startingTime" [(ngModel)]="newMatch.startingTime" required />
+  
+          <label for="teamASide">Team A</label>
+          <select id="teamASide" name="teamASide" [(ngModel)]="newMatch.teamASide" required>
+            <option *ngFor="let team of teams" [ngValue]="team">{{ team.name }}</option>
+          </select>
+  
+          <label for="teamBSide">Team B</label>
+          <select id="teamBSide" name="teamBSide" [(ngModel)]="newMatch.teamBSide" required>
+            <option *ngFor="let team of teams" [ngValue]="team">{{ team.name }}</option>
+          </select>
+  
+          <label for="matchState">Match State</label>
+          <select id="matchState" name="matchState" [(ngModel)]="newMatch.matchState" required>
+            <option *ngFor="let state of matchStates" [ngValue]="state">{{ state }}</option>
+          </select>
+  
+          <label for="tournament">Tournament</label>
+          <select id="tournament" name="tournament" [(ngModel)]="newMatch.tournament" required>
+            <option *ngFor="let tournament of tournaments" [ngValue]="tournament">{{ tournament.name }}</option>
+          </select>
+  
+          <label for="bracket">Bracket</label>
+          <select id="bracket" name="bracket" [(ngModel)]="newMatch.bracket" required>
+            <option *ngFor="let bracket of brackets" [ngValue]="bracket">{{ bracket.name }}</option>
+          </select>
+  
+          <button type="submit">Create</button>
+          <button type="button" (click)="closeCreateMatchModal()">Cancel</button>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Edit Match Modal -->
+    <div class="modal" [ngClass]="{'show': isEditModalOpen}" id="editMatchModal">
+      <div class="modal-content">
+        <h2>Edit Match</h2>
+        <form (ngSubmit)="updateMatch()" #editMatchForm="ngForm">
+          <label for="startingDate">Starting Date</label>
+          <input type="date" id="startingDate" name="startingDate" [(ngModel)]="editMatch.startingDate" />
+  
+          <label for="startingTime">Starting Time</label>
+          <input type="time" id="startingTime" name="startingTime" [(ngModel)]="editMatch.startingTime" />
+  
+          <label for="teamASide">Team A</label>
+          <select id="teamASide" name="teamASide" [(ngModel)]="editMatch.teamASide">
+            <option *ngFor="let team of teams" [ngValue]="team">{{ team.name }}</option>
+          </select>
+  
+          <label for="teamBSide">Team B</label>
+          <select id="teamBSide" name="teamBSide" [(ngModel)]="editMatch.teamBSide">
+            <option *ngFor="let team of teams" [ngValue]="team">{{ team.name }}</option>
+          </select>
+  
+          <label for="matchState">Match State</label>
+          <select id="matchState" name="matchState" [(ngModel)]="editMatch.matchState">
+            <option *ngFor="let state of matchStates" [ngValue]="state">{{ state }}</option>
+          </select>
+  
+          <label for="tournament">Tournament</label>
+          <select id="tournament" name="tournament" [(ngModel)]="editMatch.tournament">
+            <option *ngFor="let tournament of tournaments" [ngValue]="tournament">{{ tournament.name }}</option>
+          </select>
+  
+          <label for="bracket">Bracket</label>
+          <select id="bracket" name="bracket" [(ngModel)]="editMatch.bracket">
+            <option *ngFor="let bracket of brackets" [ngValue]="bracket">{{ bracket.name }}</option>
+          </select>
+  
+          <label for="teamAScore">Team A Score</label>
+          <input type="number" id="teamAScore" name="teamAScore" [(ngModel)]="editMatch.teamAScore" />
+  
+          <label for="teamBScore">Team B Score</label>
+          <input type="number" id="teamBScore" name="teamBScore" [(ngModel)]="editMatch.teamBScore" />
+  
+          <label for="winner">Winner</label>
+          <select id="winner" name="winner" [(ngModel)]="editMatch.winner">
+            <option *ngFor="let team of teams" [ngValue]="team">{{ team.name }}</option>
+          </select>
+  
+          <label for="loser">Loser</label>
+          <select id="loser" name="loser" [(ngModel)]="editMatch.loser">
+            <option *ngFor="let team of teams" [ngValue]="team">{{ team.name }}</option>
+          </select>
+  
+          <button type="submit">Update</button>
+          <button type="button" (click)="closeEditMatchModal()">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  

@@ -4,19 +4,19 @@
   <div class="mt-4 d-flex justify-content-between">
     <!-- Bottone per la creazione di un nuovo team -->
     <div *ngIf="currentUser && !currentUser.team?.id">
-      <a class="btn btn-success btn-lg" [routerLink]="['/team-create']">Create Team</a>
+      <a class="btn btn-success btn-lg" [routerLink]="['/team-create']">Create a Team</a>
     </div>
 
     <!-- Bottone per l'aggiornamento del team dell'utente loggato -->
     <div *ngIf="currentUser?.team?.id">
-      <a class="btn btn-danger btn-lg" [routerLink]="['/team-update', currentUser?.team?.id]">Update Team</a>
+      <a class="btn btn-danger btn-lg" [routerLink]="['/team-update', currentUser?.team?.id]">Update your Team</a>
     </div>
   </div>
 
   <!-- Bottone per espandere o ridurre la lista dei team -->
   <div class="mt-4 d-flex justify-content-center">
     <button class="btn btn-primary btn-lg" (click)="isExpanded = !isExpanded">
-      {{ isExpanded ? 'Collapse' : 'Expand' }} Teams
+      {{ isExpanded ? 'Collapse' : 'Expand' }} all Teams
     </button>
   </div>
 

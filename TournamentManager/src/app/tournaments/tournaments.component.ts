@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TournamentService } from './tournament.service';
-import { Tournament } from '../models/tournament.model';
+import { CreateTournamentRequestBody, Tournament } from '../models/tournament.model';
 
 @Component({
   selector: 'app-tournaments',
@@ -8,8 +8,7 @@ import { Tournament } from '../models/tournament.model';
   styleUrls: ['./tournaments.component.scss']
 })
 export class TournamentsComponent implements OnInit {
-  tournaments: any[] = [];
-  searchQuery: string = '';
+  tournaments: Tournament[] = [];
 
   constructor(private tournamentService: TournamentService) { }
 
@@ -18,16 +17,26 @@ export class TournamentsComponent implements OnInit {
   }
 
   loadTournaments(): void {
-    this.tournamentService.getAllTournaments().subscribe(data => {
-      this.tournaments = data.content;
-    });
+    this.tournamentService.getAllTournaments().subscribe(
+      page => {
+        this.tournaments = page.content;
+        console.log('Tournaments:', this.tournaments);  // Debugging
+      },
+      error => {
+        console.error('Error loading tournaments:', error);
+      }
+    );
   }
 
-  onSearch(): void {
-    // Aggiungere logica per filtrare i tornei in base a searchQuery
-  }
-
-  createTournament(): void {
-    // Aggiungere logica per navigare al form di creazione del torneo
+  createTournament(createTournamentRequestBody: CreateTournamentRequestBody): void {
+    this.tournamentService.createTournament(createTournamentRequestBody).subscribe(
+      newTournament => {
+        console.log('Tournament created successfully:', newTournament);
+        this.loadTournaments();
+      },
+      error => {
+        console.error('Error creating tournament:', error);
+      }
+    );
   }
 }

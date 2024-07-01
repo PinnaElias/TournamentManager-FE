@@ -17,6 +17,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TeamsComponent } from './team/team.component';
 import { TournamentsComponent } from './tournaments/tournaments.component';
 import { CreateTeamComponent } from './team/create-team/create-team.component';
+import { BracketComponent } from './bracket/bracket.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { CreateTeamComponent } from './team/create-team/create-team.component';
     GameComponent,
     CreateTeamComponent,
     UpdateTeamComponent,
-    TeamsComponent
+    TeamsComponent,
+    BracketComponent
   ],
   imports: [
     BrowserModule,

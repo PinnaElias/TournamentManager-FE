@@ -1,0 +1,46 @@
+<div class="container-fluid">
+
+  <!-- Bottoni per la creazione e aggiornamento del team -->
+  <div class="mt-4 d-flex justify-content-between">
+    <!-- Bottone per la creazione di un nuovo team -->
+    <div *ngIf="currentUser && !currentUser.team?.id">
+      <a class="btn btn-success btn-lg" [routerLink]="['/team-create']">Create Team</a>
+    </div>
+
+    <!-- Bottone per l'aggiornamento del team dell'utente loggato -->
+    <div *ngIf="currentUser?.team?.id">
+      <a class="btn btn-danger btn-lg" [routerLink]="['/team-update', currentUser?.team?.id]">Update Team</a>
+    </div>
+  </div>
+
+  <!-- Bottone per espandere o ridurre la lista dei team -->
+  <div class="mt-4 d-flex justify-content-center">
+    <button class="btn btn-primary btn-lg" (click)="isExpanded = !isExpanded">
+      {{ isExpanded ? 'Collapse' : 'Expand' }} Teams
+    </button>
+  </div>
+
+  <div *ngIf="isExpanded">
+    <h1 class="text-light mt-4">Teams</h1>
+
+    <div *ngIf="teams.length > 0" class="d-flex flex-column">
+      <div class="row">
+        <div class="col-12" *ngFor="let team of teams">
+          <div class="card mb-4 shadow-sm">
+            <img [src]="team.avatar" class="card-img-top" alt="Team Avatar">
+            <div class="card-body">
+              <h5 class="card-title text-light">{{ team.name }}</h5>
+              <p class="card-text text-light">{{ team.nationality }} - {{ team.game.name }}</p>
+              <h4 class="card-text text-light">
+                Members:
+                <span *ngFor="let member of team.members; let i = index">
+                  {{ member.username }}{{ i !== team.members.length - 1 ? ', ' : '' }}
+                </span>
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

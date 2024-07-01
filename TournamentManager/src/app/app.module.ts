@@ -10,8 +10,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { TournamentsComponent } from './tournaments/tournaments.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
+import { GameComponent } from './game/game.component';
+import { UpdateTeamComponent } from './team/update-team/update-team.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TeamsComponent } from './team/team.component';
+import { TournamentsComponent } from './tournaments/tournaments.component';
+import { CreateTeamComponent } from './team/create-team/create-team.component';
 
 @NgModule({
   declarations: [
@@ -20,13 +25,18 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     RegisterComponent,
     HomeComponent,
     NavbarComponent,
-    TournamentsComponent
+    TournamentsComponent,
+    GameComponent,
+    CreateTeamComponent,
+    UpdateTeamComponent,
+    TeamsComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
   providers: [
     AuthService,

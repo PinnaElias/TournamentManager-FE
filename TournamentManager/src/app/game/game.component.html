@@ -1,0 +1,15 @@
+<div class="container-fluid">
+  <div *ngIf="gamesPage">
+    <h1 class="text-light m-2">Lista dei Giochi</h1>
+    <div class="mt-4">
+      <div *ngFor="let game of gamesPage.content" class="card p-5 shadow-sm mb-3" style="max-width: 900px;">
+        <!-- Immagine del gioco -->
+        <img [src]="game.avatar" class="card-img-top" alt="Immagine gioco">
+        <div class="card-body">
+          <!-- Nome del gioco e numero massimo di giocatori per squadra -->
+          <h4 class="card-title text-light">{{ game.name }} - Max giocatori per squadra: {{ game.maxPlayersNumberForTeam }}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

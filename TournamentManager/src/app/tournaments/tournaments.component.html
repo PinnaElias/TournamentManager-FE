@@ -1,74 +1,102 @@
 <!-- src/app/components/tournament/tournament.component.html -->
 
-<div class="tournament-container">
-  <h1>Tournaments</h1>
-  <div *ngFor="let tournament of tournaments">
-    <div class="tournament-card">
-      <h2>{{ tournament.name }}</h2>
-      <p>{{ tournament.description }}</p>
-      <p>Game: {{ tournament.game.name }}</p>
-      <p>Starting Date: {{ tournament.startingDate | date:'shortDate' }}</p>
-      <p>Ending Date: {{ tournament.endingDate | date:'shortDate' }}</p>
-      <button (click)="viewBracket(tournament.id)">View Bracket</button>
-      <button (click)="openEditTournamentModal(tournament.id)">Edit</button>
-      <button (click)="deleteTournament(tournament.id)">Delete</button>
+<div class="container">
+  <div class="tournament-container d-flex flex-column align-items-center">
+    <h1 class="text-light mb-4">Tournaments</h1>
+    <div *ngFor="let tournament of tournaments" class="tournament-card p-4 mb-3 shadow-sm">
+      <h2 class="text-light">{{ tournament.name }}</h2>
+      <p class="text-light">{{ tournament.description }}</p>
+      <p class="text-light">Game: {{ tournament.game.name }}</p>
+      <p class="text-light">Starting Date: {{ tournament.startingDate | date:'shortDate' }}</p>
+      <p class="text-light">Ending Date: {{ tournament.endingDate | date:'shortDate' }}</p>
+      <div class="d-flex gap-2 mt-3">
+        <button (click)="viewBracket(tournament.id)" class="btn btn-info">View Bracket</button>
+        <button (click)="openEditTournamentModal(tournament.id)" class="btn btn-warning">Edit</button>
+        <button (click)="deleteTournament(tournament.id)" class="btn btn-danger">Delete</button>
+      </div>
     </div>
-  </div>
-  <button (click)="openCreateTournamentModal()">Create Tournament</button>
+    <button (click)="openCreateTournamentModal()" class="btn btn-success mt-3">Create Tournament</button>
 
-  <!-- Create Tournament Modal -->
-  <div class="modal" [ngClass]="{'show': isCreateModalOpen}" id="createTournamentModal">
-    <div class="modal-content">
-      <h2>Create Tournament</h2>
-      <form (ngSubmit)="createTournament(createTournamentForm.value)" #createTournamentForm="ngForm">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" ngModel placeholder="Name" required />
+    <!-- Create Tournament Modal -->
+    <div class="modal" [ngClass]="{'show': isCreateModalOpen}" (click)="closeCreateTournamentModal($event)">
+      <div class="modal-content p-4" (click)="stopPropagation($event)">
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeCreateTournamentModal($event)"></button>
+        <h2 class="text-light">Create Tournament</h2>
+        <form (ngSubmit)="createTournament(createTournamentForm.value)" #createTournamentForm="ngForm">
+          <div class="mb-3">
+            <label for="name" class="text-light fw-bold">Name</label>
+            <input type="text" id="name" name="name" ngModel class="form-control" placeholder="Name" required />
+          </div>
 
-        <label for="description">Description</label>
-        <input type="text" id="description" name="description" ngModel placeholder="Description" required />
+          <div class="mb-3">
+            <label for="description" class="text-light fw-bold">Description</label>
+            <input type="text" id="description" name="description" ngModel class="form-control" placeholder="Description" required />
+          </div>
 
-        <label for="game">Game</label>
-        <select id="game" name="game" ngModel #game="ngModel" required>
-          <option *ngFor="let game of games" [ngValue]="game">{{ game.name }}</option>
-        </select>
+          <div class="mb-3">
+            <label for="game" class="text-light fw-bold">Game</label>
+            <select id="game" name="game" ngModel class="form-select" #game="ngModel" required>
+              <option *ngFor="let game of games" [ngValue]="game">{{ game.name }}</option>
+            </select>
+          </div>
 
-        <label for="startingDate">Starting Date</label>
-        <input type="date" id="startingDate" name="startingDate" ngModel placeholder="Starting Date" required />
+          <div class="mb-3">
+            <label for="startingDate" class="text-light fw-bold">Starting Date</label>
+            <input type="date" id="startingDate" name="startingDate" ngModel class="form-control" placeholder="Starting Date" required />
+          </div>
 
-        <label for="endingDate">Ending Date</label>
-        <input type="date" id="endingDate" name="endingDate" ngModel placeholder="Ending Date" required />
+          <div class="mb-3">
+            <label for="endingDate" class="text-light fw-bold">Ending Date</label>
+            <input type="date" id="endingDate" name="endingDate" ngModel class="form-control" placeholder="Ending Date" required />
+          </div>
 
-        <button type="submit">Create</button>
-        <button type="button" (click)="closeCreateTournamentModal()">Cancel</button>
-      </form>
+          <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-success">Create</button>
+            <button type="button" (click)="closeCreateTournamentModal($event)" class="btn btn-secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
 
-  <!-- Edit Tournament Modal -->
-  <div class="modal" [ngClass]="{'show': isEditModalOpen}" id="editTournamentModal">
-    <div class="modal-content">
-      <h2>Edit Tournament</h2>
-      <form (ngSubmit)="updateTournament()" #editTournamentForm="ngForm">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" [(ngModel)]="editTournament!.name" />
+    <!-- Edit Tournament Modal -->
+    <div class="modal" [ngClass]="{'show': isEditModalOpen}" (click)="closeEditTournamentModal($event)">
+      <div class="modal-content p-4" (click)="stopPropagation($event)">
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeEditTournamentModal($event)"></button>
+        <h2 class="text-light">Edit Tournament</h2>
+        <form (ngSubmit)="updateTournament()" #editTournamentForm="ngForm">
+          <div class="mb-3">
+            <label for="name" class="text-light fw-bold">Name</label>
+            <input type="text" id="name" name="name" [(ngModel)]="editTournament!.name" class="form-control" />
+          </div>
 
-        <label for="description">Description</label>
-        <input type="text" id="description" name="description" [(ngModel)]="editTournament!.description" />
+          <div class="mb-3">
+            <label for="description" class="text-light fw-bold">Description</label>
+            <input type="text" id="description" name="description" [(ngModel)]="editTournament!.description" class="form-control" />
+          </div>
 
-        <label for="game">Game</label>
-        <select id="game" name="game" [(ngModel)]="editTournament!.game">
-          <option *ngFor="let game of games" [ngValue]="game">{{ game.name }}</option>
-        </select>
+          <div class="mb-3">
+            <label for="game" class="text-light fw-bold">Game</label>
+            <select id="game" name="game" [(ngModel)]="editTournament!.game" class="form-select">
+              <option *ngFor="let game of games" [ngValue]="game">{{ game.name }}</option>
+            </select>
+          </div>
 
-        <label for="startingDate">Starting Date</label>
-        <input type="date" id="startingDate" name="startingDate" [(ngModel)]="editTournament!.startingDate" />
+          <div class="mb-3">
+            <label for="startingDate" class="text-light fw-bold">Starting Date</label>
+            <input type="date" id="startingDate" name="startingDate" [(ngModel)]="editTournament!.startingDate" class="form-control" />
+          </div>
 
-        <label for="endingDate">Ending Date</label>
-        <input type="date" id="endingDate" name="endingDate" [(ngModel)]="editTournament!.endingDate" />
+          <div class="mb-3">
+            <label for="endingDate" class="text-light fw-bold">Ending Date</label>
+            <input type="date" id="endingDate" name="endingDate" [(ngModel)]="editTournament!.endingDate" class="form-control" />
+          </div>
 
-        <button type="submit">Update</button>
-        <button type="button" (click)="closeEditTournamentModal()">Cancel</button>
-      </form>
+          <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-warning">Update</button>
+            <button type="button" (click)="closeEditTournamentModal($event)" class="btn btn-secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>

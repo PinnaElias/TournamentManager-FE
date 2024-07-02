@@ -44,29 +44,33 @@ export class TournamentComponent implements OnInit {
     );
   }
 
-  openCreateTournamentModal(): void {
+  openCreateTournamentModal() {
     this.isCreateModalOpen = true;
   }
 
-  closeCreateTournamentModal(): void {
+  closeCreateTournamentModal(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
     this.isCreateModalOpen = false;
   }
 
-  openEditTournamentModal(tournamentId: string): void {
-    this.tournamentService.getTournamentById(tournamentId).subscribe(
-      (data) => {
-        this.editTournament = data;
-        this.isEditModalOpen = true;
-      },
-      (error) => console.error('Error fetching tournament details', error)
-    );
+  openEditTournamentModal(tournamentId: string) {
+    // Trova il torneo da modificare
+    this.editTournament = this.tournaments.find(t => t.id === tournamentId) || null;
+    this.isEditModalOpen = true;
   }
 
-  closeEditTournamentModal(): void {
+  closeEditTournamentModal(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
     this.isEditModalOpen = false;
-    this.editTournament = null;  // Reset to null to avoid issues
   }
 
+  stopPropagation(event: Event) {
+    event.stopPropagation();
+  }
   createTournament(formValues: any): void {
     const newTournament: CreateTournamentRequestBody = {
       name: formValues.name,

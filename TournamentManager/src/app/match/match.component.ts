@@ -1,46 +1,45 @@
-// src/app/components/match/match.component.ts
-
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MatchService } from './match.service';
-import { Match, CreateMatchRequestBody, UpdateMatchRequestBody, MatchState } from '../models/match.model';
-import { TeamService } from '../team/team.service';
 import { TournamentService } from '../tournaments/tournament.service';
+import { TeamService } from '../team/team.service';
 import { BracketService } from '../bracket/bracket.service';
+import { Match, UpdateMatchRequestBody, CreateMatchRequestBody, MatchState } from '../models/match.model';
+import { Tournament, Page } from '../models/tournament.model';
 import { Team } from '../models/team.model';
-import { Tournament } from '../models/tournament.model';
 import { Bracket } from '../models/bracket.model';
+import { Observable, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-match',
   templateUrl: './match.component.html',
-  styleUrls: ['./match.component.css']
+  styleUrls: ['./match.component.scss']
 })
 export class MatchComponent implements OnInit {
+  match: Match | null = null;
   matches: Match[] = [];
-  teams: Team[] = [];
+  teams: any[] = [];
+  matchStates: string[] = Object.values(MatchState);
   tournaments: Tournament[] = [];
-  brackets: Bracket[] = [];
-  selectedMatch: Match | null = null;
+  brackets: any[] = [];
+  isCreateModalOpen = false;
+  isEditModalOpen = false;
   newMatch: CreateMatchRequestBody = {
     startingDate: '',
     startingTime: '',
-    teamASide: {} as Team,
-    teamBSide: {} as Team,
-    matchState: MatchState.PLANNED,
-    tournament: {} as Tournament,
-    bracket: {} as Bracket,
+    teamASide: 0,
+    teamBSide: 0,
+    matchState: MatchState.PENDING,
+    tournamentId: 0,
+    bracketId: 0
   };
-  isCreateModalOpen: boolean = false;
-  isEditModalOpen: boolean = false;
   editMatch: UpdateMatchRequestBody = {};
-
-  matchStates = Object.values(MatchState);
 
   constructor(
     private matchService: MatchService,
-    private teamService: TeamService,
     private tournamentService: TournamentService,
-    private bracketService: BracketService
+    private BracketService: BracketService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -51,41 +50,20 @@ export class MatchComponent implements OnInit {
   }
 
   loadMatches(): void {
-    this.matchService.getAllMatches().subscribe(
-      (data) => this.matches = data.content,
-      (error) => console.error('Error fetching matches', error)
-    );
+    this.matchService.getAllMatches().subscribe(matches => this.matches = matches.content);
   }
 
   loadTeams(): void {
-    this.teamService.getAllTeams().subscribe(
-      (data) => this.teams = data.content,
-      (error) => console.error('Error fetching teams', error)
-    );
+    // Assuming there is a team service to fetch teams
+    // this.teamService.getAllTeams().subscribe(teams => this.teams = teams);
   }
 
   loadTournaments(): void {
-    this.tournamentService.getAllTournaments().subscribe(
-      (data) => this.tournaments = data.content,
-      (error) => console.error('Error fetching tournaments', error)
-    );
+    this.tournamentService.getAllTournaments().subscribe(page => this.tournaments = page.content);
   }
 
   loadBrackets(): void {
-    this.bracketService.getAllBrackets().subscribe(
-      (data) => this.brackets = data.content,
-      (error) => console.error('Error fetching brackets', error)
-    );
-  }
-
-  createMatch(): void {
-    this.matchService.createMatch(this.newMatch).subscribe(
-      () => {
-        this.isCreateModalOpen = false;
-        this.loadMatches();
-      },
-      (error) => console.error('Error creating match', error)
-    );
+    // Assuming there is a bracket service to fetch brackets
   }
 
   openCreateMatchModal(): void {
@@ -97,44 +75,52 @@ export class MatchComponent implements OnInit {
   }
 
   openEditMatchModal(match: Match): void {
-    this.selectedMatch = match;
     this.editMatch = {
       startingDate: match.startingDate,
       startingTime: match.startingTime,
-      teamASide: match.teamASide,
-      teamBSide: match.teamBSide,
-      matchState: match.matchState,
-      tournament: match.tournament,
-      bracket: match.bracket,
-      winner: match.winner,
-      loser: match.loser,
+      teamASide: Number(match.teamASide.id), // Converti in numero
+      teamBSide: Number(match.teamBSide.id), // Converti in numero
       teamAScore: match.teamAScore,
-      teamBScore: match.teamBScore
+      teamBScore: match.teamBScore,
+      matchState: match.matchState,
+      tournamentId: Number(match.tournament.id), // Converti in numero
+      bracketId: Number(match.bracket.id), // Converti in numero
+      winnerId: match.winner ? Number(match.winner.id) : undefined, // Converti in numero se definito
+      loserId: match.loser ? Number(match.loser.id) : undefined // Converti in numero se definito
     };
     this.isEditModalOpen = true;
   }
 
   closeEditMatchModal(): void {
     this.isEditModalOpen = false;
-    this.selectedMatch = null;
+  }
+
+  createMatch(): void {
+    this.matchService.createMatch(this.newMatch).subscribe(
+      match => {
+        this.matches.push(match);
+        this.closeCreateMatchModal();
+      }
+    );
   }
 
   updateMatch(): void {
-    if (this.selectedMatch) {
-      this.matchService.updateMatch(this.selectedMatch.id, this.editMatch).subscribe(
-        () => {
-          this.isEditModalOpen = false;
-          this.loadMatches();
-        },
-        (error) => console.error('Error updating match', error)
+    if (this.match) {
+      this.matchService.updateMatch(this.match.id, this.editMatch).subscribe(
+        updatedMatch => {
+          const index = this.matches.findIndex(m => m.id === updatedMatch.id);
+          if (index !== -1) {
+            this.matches[index] = updatedMatch;
+          }
+          this.closeEditMatchModal();
+        }
       );
     }
   }
 
   deleteMatch(id: number): void {
     this.matchService.deleteMatch(id).subscribe(
-      () => this.loadMatches(),
-      (error) => console.error('Error deleting match', error)
+      () => this.matches = this.matches.filter(match => match.id !== id)
     );
   }
 }

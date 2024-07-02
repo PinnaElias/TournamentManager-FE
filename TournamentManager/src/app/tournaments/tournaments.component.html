@@ -1,18 +1,19 @@
+<!-- src/app/components/tournament/tournament.component.html -->
+
 <div class="tournament-container">
   <h1>Tournaments</h1>
-
-  <!-- List of tournaments -->
   <div *ngFor="let tournament of tournaments">
     <div class="tournament-card">
       <h2>{{ tournament.name }}</h2>
+      <p>{{ tournament.description }}</p>
       <p>Game: {{ tournament.game.name }}</p>
-      <p>Starting Date: {{ tournament.startDate | date }}</p>
-      <p>Ending Date: {{ tournament.endDate | date }}</p>
-      <button (click)="selectTournament(tournament.id)">View Details</button>
+      <p>Starting Date: {{ tournament.startingDate | date:'shortDate' }}</p>
+      <p>Ending Date: {{ tournament.endingDate | date:'shortDate' }}</p>
+      <button (click)="viewBracket(tournament.id)">View Bracket</button>
+      <button (click)="openEditTournamentModal(tournament.id)">Edit</button>
+      <button (click)="deleteTournament(tournament.id)">Delete</button>
     </div>
   </div>
-
-  <!-- Create Tournament Button -->
   <button (click)="openCreateTournamentModal()">Create Tournament</button>
 
   <!-- Create Tournament Modal -->
@@ -22,20 +23,20 @@
       <form (ngSubmit)="createTournament(createTournamentForm.value)" #createTournamentForm="ngForm">
         <label for="name">Name</label>
         <input type="text" id="name" name="name" ngModel placeholder="Name" required />
-        
+
         <label for="description">Description</label>
         <input type="text" id="description" name="description" ngModel placeholder="Description" required />
-        
-        <label for="gameId">Game</label>
-        <select id="gameId" name="gameId" ngModel required>
-          <option *ngFor="let game of games" [value]="game.id">{{ game.name }}</option>
+
+        <label for="game">Game</label>
+        <select id="game" name="game" ngModel #game="ngModel" required>
+          <option *ngFor="let game of games" [ngValue]="game">{{ game.name }}</option>
         </select>
 
-        <label for="startDate">Starting Date</label>
-        <input type="date" id="startDate" name="startDate" ngModel required />
+        <label for="startingDate">Starting Date</label>
+        <input type="date" id="startingDate" name="startingDate" ngModel placeholder="Starting Date" required />
 
-        <label for="endDate">Ending Date</label>
-        <input type="date" id="endDate" name="endDate" ngModel required />
+        <label for="endingDate">Ending Date</label>
+        <input type="date" id="endingDate" name="endingDate" ngModel placeholder="Ending Date" required />
 
         <button type="submit">Create</button>
         <button type="button" (click)="closeCreateTournamentModal()">Cancel</button>
@@ -43,29 +44,31 @@
     </div>
   </div>
 
-  <!-- Tournament Details -->
-  <div *ngIf="selectedTournament" class="tournament-details">
-    <h2>{{ selectedTournament.name }}</h2>
-    <p>Game: {{ selectedTournament.game.name }}</p>
-    <p>Starting Date: {{ selectedTournament.startDate | date }}</p>
-    <p>Ending Date: {{ selectedTournament.endDate | date }}</p>
-    
-    <h3>Teams</h3>
-    <ul>
-      <li *ngFor="let team of teams">{{ team.name }}</li>
-    </ul>
-    <input [(ngModel)]="newTeamId" placeholder="Enter team ID to register" />
-    <button (click)="registerTeamToTournament(selectedTournament.id)">Register Team</button>
+  <!-- Edit Tournament Modal -->
+  <div class="modal" [ngClass]="{'show': isEditModalOpen}" id="editTournamentModal">
+    <div class="modal-content">
+      <h2>Edit Tournament</h2>
+      <form (ngSubmit)="updateTournament()" #editTournamentForm="ngForm">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" [(ngModel)]="editTournament!.name" />
 
-    <h3>Bracket</h3>
-    <div *ngIf="bracket.length">
-      <ul>
-        <li *ngFor="let match of bracket">
-          {{ match.teamA.name }} vs {{ match.teamB.name }}
-          <button (click)="updateMatch(selectedTournament.id, match.id, match.teamA.id, match.teamB.id)">Update Result</button>
-        </li>
-      </ul>
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" [(ngModel)]="editTournament!.description" />
+
+        <label for="game">Game</label>
+        <select id="game" name="game" [(ngModel)]="editTournament!.game">
+          <option *ngFor="let game of games" [ngValue]="game">{{ game.name }}</option>
+        </select>
+
+        <label for="startingDate">Starting Date</label>
+        <input type="date" id="startingDate" name="startingDate" [(ngModel)]="editTournament!.startingDate" />
+
+        <label for="endingDate">Ending Date</label>
+        <input type="date" id="endingDate" name="endingDate" [(ngModel)]="editTournament!.endingDate" />
+
+        <button type="submit">Update</button>
+        <button type="button" (click)="closeEditTournamentModal()">Cancel</button>
+      </form>
     </div>
-    <button (click)="generateBracket(selectedTournament.id)">Generate Bracket</button>
   </div>
 </div>

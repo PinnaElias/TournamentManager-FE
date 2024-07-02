@@ -1,9 +1,10 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { Tournament, Match } from '../models/tournament.model';
-import { Game } from '../models/game.model';  // Importa il modello per i giochi
-import { Team } from '../models/team.model';
-import { TeamService } from '../team/team.service';
+import { Tournament, CreateTournamentRequestBody, UpdateTournamentRequestBody, Page } from 'src/app/models/tournament.model';
+import { Game } from 'src/app/models/game.model';
+import { GameService } from '../game/game.service';
 import { TournamentService } from './tournament.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-tournament',
@@ -12,79 +13,35 @@ import { TournamentService } from './tournament.service';
 })
 export class TournamentComponent implements OnInit {
   tournaments: Tournament[] = [];
-  selectedTournament: Tournament | null = null;
-  teams: Team[] = [];
-  bracket: Match[] = [];
-  newTeamId: string = '';
-  games: Game[] = [];  // Aggiunto per gestire i giochi
-  isCreateModalOpen: boolean = false;
+  games: Game[] = [];
+  editTournament: Tournament | null = null;
+  isCreateModalOpen = false;
+  isEditModalOpen = false;
 
   constructor(
     private tournamentService: TournamentService,
-    private teamService: TeamService
+    private gameService: GameService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.loadTournaments();
-    this.loadGames();  // Carica i giochi all'avvio del componente
+    this.loadGames();
   }
 
   loadTournaments(): void {
     this.tournamentService.getAllTournaments().subscribe(
-      (data) => this.tournaments = data.content,
+      (data) => this.tournaments = data.content,  // Assicurati che questo sia corretto
       (error) => console.error('Error fetching tournaments', error)
     );
   }
 
-  selectTournament(tournamentId: string): void {
-    this.tournamentService.getTournamentById(tournamentId).subscribe(
-      (data) => {
-        this.selectedTournament = data;
-        this.loadTeamsForTournament(tournamentId);
-        this.loadBracketForTournament(tournamentId);
-      },
-      (error) => console.error('Error fetching tournament details', error)
+  loadGames(): void {
+    this.gameService.getAllGames().subscribe(
+      (data) => this.games = data.content,  // Assicurati che questo sia corretto
+      (error) => console.error('Error fetching games', error)
     );
-  }
-
-  loadTeamsForTournament(tournamentId: string): void {
-    this.tournamentService.getTeamsForTournament(tournamentId).subscribe(
-      (data) => this.teams = data,
-      (error) => console.error('Error fetching teams for tournament', error)
-    );
-  }
-
-  loadBracketForTournament(tournamentId: string): void {
-    this.tournamentService.getBracketForTournament(tournamentId).subscribe(
-      (data) => this.bracket = data,
-      (error) => console.error('Error fetching bracket for tournament', error)
-    );
-  }
-
-  generateBracket(tournamentId: string): void {
-    this.tournamentService.generateBracket(tournamentId).subscribe(
-      () => this.loadBracketForTournament(tournamentId),
-      (error) => console.error('Error generating bracket', error)
-    );
-  }
-
-  updateMatch(tournamentId: string, matchId: string, winnerId: string, loserId: string): void {
-    this.tournamentService.updateMatch(tournamentId, matchId, { winnerId, loserId }).subscribe(
-      () => this.loadBracketForTournament(tournamentId),
-      (error) => console.error('Error updating match result', error)
-    );
-  }
-
-  registerTeamToTournament(tournamentId: string): void {
-    if (this.newTeamId) {
-      this.teamService.registerTeamToTournament(tournamentId, this.newTeamId).subscribe(
-        () => {
-          this.newTeamId = '';
-          this.loadTeamsForTournament(tournamentId);
-        },
-        (error) => console.error('Error registering team to tournament', error)
-      );
-    }
   }
 
   openCreateTournamentModal(): void {
@@ -95,13 +52,28 @@ export class TournamentComponent implements OnInit {
     this.isCreateModalOpen = false;
   }
 
+  openEditTournamentModal(tournamentId: string): void {
+    this.tournamentService.getTournamentById(tournamentId).subscribe(
+      (data) => {
+        this.editTournament = data;
+        this.isEditModalOpen = true;
+      },
+      (error) => console.error('Error fetching tournament details', error)
+    );
+  }
+
+  closeEditTournamentModal(): void {
+    this.isEditModalOpen = false;
+    this.editTournament = null;  // Reset to null to avoid issues
+  }
+
   createTournament(formValues: any): void {
-    const newTournament = {
+    const newTournament: CreateTournamentRequestBody = {
       name: formValues.name,
       description: formValues.description,
-      gameId: formValues.gameId,
-      startDate: formValues.startDate,
-      endDate: formValues.endDate
+      game: formValues.game, // Modificato per usare 'game' invece di 'gameId'
+      startingDate: formValues.startingDate,
+      endingDate: formValues.endingDate
     };
     this.tournamentService.createTournament(newTournament).subscribe(
       () => {
@@ -112,10 +84,34 @@ export class TournamentComponent implements OnInit {
     );
   }
 
-  loadGames(): void {
-    this.tournamentService.getAllGames().subscribe(
-      (data) => this.games = data,
-      (error) => console.error('Error fetching games', error)
+  updateTournament(): void {
+    if (this.editTournament) {
+      const updatedTournament: UpdateTournamentRequestBody = {
+        name: this.editTournament.name,
+        description: this.editTournament.description,
+        game: this.editTournament.game,  // Modificato per usare 'game' invece di 'gameId'
+        endingDate: this.editTournament.endingDate
+      };
+      if (this.editTournament.id) {
+        this.tournamentService.updateTournament(this.editTournament.id, updatedTournament).subscribe(
+          () => {
+            this.closeEditTournamentModal();
+            this.loadTournaments();
+          },
+          (error) => console.error('Error updating tournament', error)
+        );
+      }
+    }
+  }
+
+  deleteTournament(tournamentId: string): void {
+    this.tournamentService.deleteTournament(tournamentId).subscribe(
+      () => this.loadTournaments(),
+      (error) => console.error('Error deleting tournament', error)
     );
+  }
+
+  viewBracket(tournamentId: string): void {
+    this.router.navigate([`/tournaments/${tournamentId}/bracket`]);
   }
 }

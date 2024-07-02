@@ -10,19 +10,17 @@ import { Game } from '../models/game.model';
 export class GameService {
   private baseUrl = 'http://localhost:8081/api/games';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getAllGames(page: number = 0, size: number = 10, sortBy: string = 'id'): Observable<Page<Game>> {
-    let params = new HttpParams()
+  getAllGames(page: number = 0, size: number = 10, sortBy: string = 'name'): Observable<Page<Game>> {
+    const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sortBy', sortBy);
-
     return this.http.get<Page<Game>>(this.baseUrl, { params });
   }
 
   getGameById(id: string): Observable<Game> {
-    const url = `${this.baseUrl}/${id}`;
-    return this.http.get<Game>(url);
+    return this.http.get<Game>(`${this.baseUrl}/${id}`);
   }
 }

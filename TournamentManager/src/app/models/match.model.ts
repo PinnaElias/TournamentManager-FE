@@ -1,20 +1,11 @@
-// src/app/models/match.model.ts
-
 import { Team } from './team.model';
 import { Tournament } from './tournament.model';
 import { Bracket } from './bracket.model';
 
-export enum MatchState {
-    PLANNED = 'PLANNED',
-    CONCLUDED = 'CONCLUDED',
-    CANCELED = 'CANCELED',
-    ONGOING = 'ONGOING'
-}
-
 export interface Match {
     id: number;
-    startingDate: string;  // ISO 8601 date format
-    startingTime: string;  // ISO 8601 time format
+    startingDate: string;
+    startingTime: string;
     teamASide: Team;
     teamBSide: Team;
     teamAScore: number;
@@ -24,31 +15,38 @@ export interface Match {
     bracket: Bracket;
     winner?: Team;
     loser?: Team;
-}
-
-export interface CreateMatchRequestBody {
-    startingDate: string;  // ISO 8601 date format
-    startingTime: string;  // ISO 8601 time format
-    teamASide: Team;
-    teamBSide: Team;
+  }
+  
+  export interface CreateMatchRequestBody {
+    startingDate: string;
+    startingTime: string;
+    teamASide: number;
+    teamBSide: number;
     matchState: MatchState;
-    tournament: Tournament;
-    bracket: Bracket;
-}
-
-export interface UpdateMatchRequestBody {
-    startingDate?: string;  // ISO 8601 date format
-    startingTime?: string;  // ISO 8601 time format
-    teamASide?: Team;
-    teamBSide?: Team;
+    tournamentId: number;
+    bracketId: number;
+  }
+  
+  export interface UpdateMatchRequestBody {
+    startingDate?: string;
+    startingTime?: string;
+    teamASide?: number;
+    teamBSide?: number;
     teamAScore?: number;
     teamBScore?: number;
     matchState?: MatchState;
-    tournament?: Tournament;
-    bracket?: Bracket;
-    winner?: Team;
-    loser?: Team;
-}
+    tournamentId?: number;
+    bracketId?: number;
+    winnerId?: number;
+    loserId?: number;
+  }
+  
+  export enum MatchState {
+    PENDING = 'PENDING',
+    IN_PROGRESS = 'IN_PROGRESS',
+    COMPLETED = 'COMPLETED',
+    CANCELLED = 'CANCELLED'
+  }
 
 export interface Page<T> {
     content: T[];

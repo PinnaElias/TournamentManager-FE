@@ -45,13 +45,13 @@
           </select>
   
           <label for="tournament">Tournament</label>
-          <select id="tournament" name="tournament" [(ngModel)]="newMatch.tournament" required>
+          <select id="tournament" name="tournament" [(ngModel)]="newMatch.tournamentId" required>
             <option *ngFor="let tournament of tournaments" [ngValue]="tournament">{{ tournament.name }}</option>
           </select>
   
           <label for="bracket">Bracket</label>
-          <select id="bracket" name="bracket" [(ngModel)]="newMatch.bracket" required>
-            <option *ngFor="let bracket of brackets" [ngValue]="bracket">{{ bracket.name }}</option>
+          <select id="bracket" name="bracket" [(ngModel)]="newMatch.bracketId" required>
+            <option *ngFor="let bracket of brackets" [ngValue]="bracket">{{ bracket.bracketType }}</option>
           </select>
   
           <button type="submit">Create</button>
@@ -86,16 +86,6 @@
             <option *ngFor="let state of matchStates" [ngValue]="state">{{ state }}</option>
           </select>
   
-          <label for="tournament">Tournament</label>
-          <select id="tournament" name="tournament" [(ngModel)]="editMatch.tournament">
-            <option *ngFor="let tournament of tournaments" [ngValue]="tournament">{{ tournament.name }}</option>
-          </select>
-  
-          <label for="bracket">Bracket</label>
-          <select id="bracket" name="bracket" [(ngModel)]="editMatch.bracket">
-            <option *ngFor="let bracket of brackets" [ngValue]="bracket">{{ bracket.name }}</option>
-          </select>
-  
           <label for="teamAScore">Team A Score</label>
           <input type="number" id="teamAScore" name="teamAScore" [(ngModel)]="editMatch.teamAScore" />
   
@@ -103,12 +93,12 @@
           <input type="number" id="teamBScore" name="teamBScore" [(ngModel)]="editMatch.teamBScore" />
   
           <label for="winner">Winner</label>
-          <select id="winner" name="winner" [(ngModel)]="editMatch.winner">
+          <select id="winner" name="winner" [(ngModel)]="editMatch.winnerId">
             <option *ngFor="let team of teams" [ngValue]="team">{{ team.name }}</option>
           </select>
   
           <label for="loser">Loser</label>
-          <select id="loser" name="loser" [(ngModel)]="editMatch.loser">
+          <select id="loser" name="loser" [(ngModel)]="editMatch.loserId">
             <option *ngFor="let team of teams" [ngValue]="team">{{ team.name }}</option>
           </select>
   

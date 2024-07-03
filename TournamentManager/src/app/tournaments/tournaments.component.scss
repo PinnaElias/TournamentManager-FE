@@ -100,3 +100,12 @@
   background-color: #6c757d;
   color: #fff;
 }
+
+#participants {
+  max-height: 200px; 
+  overflow-y: auto; 
+}
+
+option strong {
+  font-weight: bold;
+}

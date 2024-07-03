@@ -1,15 +1,12 @@
-import { Router } from '@angular/router';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Tournament, CreateTournamentRequestBody, UpdateTournamentRequestBody, Page, MatchState } from 'src/app/models/tournament.model';
-import { Game } from 'src/app/models/game.model';
-import { GameService } from '../game/game.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Tournament, CreateTournamentRequestBody, UpdateTournamentRequestBody } from 'src/app/models/tournament.model';
 import { TournamentService } from './tournament.service';
 import { BracketType } from '../models/bracket.model';
-import { Bracket, CreateBracketRequestBody, UpdateBracketRequestBody } from '../models/bracket.model';
 import { Team } from '../models/team.model';
-import { FormBuilder } from '@angular/forms';
-import { FormGroup } from '@angular/forms';
-import { Validators } from '@angular/forms';
+import { CreateBracketRequestBody, UpdateBracketRequestBody } from '../models/bracket.model';
+import { GameService } from '../game/game.service';
+import { Game } from '../models/game.model';
 
 @Component({
   selector: 'app-tournament',
@@ -24,39 +21,66 @@ export class TournamentComponent implements OnInit {
     BracketType.ROUND_ROBIN,
     BracketType.LADDER_TOURNAMENT
   ];
-  availableTeams: Team[] = []; // Squadre disponibili
+  availableTeams: Team[] = [];  // Squadre disponibili
+  availableGames: Game[] = [];
   tournamentForm: FormGroup;
   bracketForm: FormGroup;
+  gameName: string = '';  // Aggiungi una variabile per memorizzare il nome del gioco
+  selectedGame?: Game;  // Aggiungi una variabile per memorizzare il gioco selezionato
 
   @ViewChild('bracketModal') bracketModal!: ElementRef<HTMLDivElement>;
 
   constructor(
     private fb: FormBuilder,
-    private tournamentService: TournamentService
+    private tournamentService: TournamentService,
+    private gameService: GameService  // Aggiungi GameService al costruttore
   ) {
     this.tournamentForm = this.fb.group({
       name: ['', Validators.required],
       avatar: [''],
       description: [''],
       bracketType: ['', Validators.required],
+      teams: [[]],
       startingDate: [''],
       endingDate: [''],
       startingTime: [''],
       prize: [''],
-      teams: [[]]  // Gestisce la selezione delle squadre come array di IDs
+      game: ['', Validators.required] // Campo per il gioco
     });
 
     this.bracketForm = this.fb.group({
       bracketType: ['', Validators.required],
-      participants: [[]],
-      winner: [undefined as Team | undefined],  // `undefined` se non c'è vincitore
+      participants: [[]],  // Lista vuota di partecipanti
+      winner: [undefined as Team | undefined],
       losers: [[]]
     });
   }
 
   ngOnInit(): void {
-    this.tournamentService.getAvailableTeams().subscribe(teams => {
-      this.availableTeams = teams;
+    this.loadGames();
+
+    this.tournamentService.getAvailableTeams().subscribe({
+      next: (teams) => {
+        this.availableTeams = teams;
+        console.log('Available teams:', this.availableTeams);
+      },
+      error: (error) => {
+        console.error('Error fetching teams:', error);  // Log dell'errore
+      }
+    });
+
+    this.loadTournaments();
+  }
+
+  loadTournaments(): void {
+    this.tournamentService.getAllTournaments().subscribe({
+      next: (page) => {
+        this.tournaments = page.content;
+        console.log('Tournaments loaded:', this.tournaments);
+      },
+      error: (error) => {
+        console.error('Error fetching tournaments:', error);
+      }
     });
   }
 
@@ -74,7 +98,12 @@ export class TournamentComponent implements OnInit {
       tournament: undefined  // Associa il torneo successivamente
     };
 
-    this.bracketForm.patchValue(bracket);
+    this.bracketForm.patchValue({
+      bracketType: type,
+      participants: [],  // Lista vuota di partecipanti
+      winner: undefined,  // Nessun vincitore inizialmente
+      losers: []  // Lista vuota di perdenti
+    });
 
     if (this.bracketModal?.nativeElement) {
       const modalElement = this.bracketModal.nativeElement;
@@ -100,42 +129,77 @@ export class TournamentComponent implements OnInit {
       document.body.classList.remove('modal-open');
       const backdrop = document.querySelector('.modal-backdrop');
       if (backdrop) {
+        backdrop.removeEventListener('click', () => {
+          this.hideBracketModal();
+        });
         backdrop.remove();
       }
     }
   }
 
   onBracketSubmit() {
-    const bracketData: UpdateBracketRequestBody = {
-      bracketType: this.bracketForm.get('bracketType')?.value as BracketType,
-      participants: this.bracketForm.get('participants')?.value || [],
-      winner: this.bracketForm.get('winner')?.value || undefined,  // `undefined` se non c'è vincitore
-      losers: this.bracketForm.get('losers')?.value || []
-    };
+    if (this.bracketForm.valid) {
+      const bracketData: UpdateBracketRequestBody = {
+        bracketType: this.bracketForm.get('bracketType')?.value as BracketType,
+        participants: this.bracketForm.get('participants')?.value || [],
+        winner: this.bracketForm.get('winner')?.value || undefined,  // `undefined` se non c'è vincitore
+        losers: this.bracketForm.get('losers')?.value || []
+      };
 
-    console.log(bracketData);
-    // Aggiungi il tuo codice per gestire l'invio del bracket al backend
+      console.log('Bracket Form Submitted:', bracketData);
+      // Aggiungi il tuo codice per gestire l'invio del bracket al backend
 
-    this.hideBracketModal();
+      this.hideBracketModal();
+    } else {
+      console.error('Bracket Form is invalid:', this.bracketForm.errors);
+    }
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.tournamentForm.valid) {
-      const formData = new FormData();
-      formData.append('name', this.tournamentForm.get('name')?.value || '');
-      formData.append('avatar', this.tournamentForm.get('avatar')?.value || '');
-      formData.append('description', this.tournamentForm.get('description')?.value || '');
-      formData.append('bracketType', this.tournamentForm.get('bracketType')?.value || '');
-      formData.append('startingDate', this.tournamentForm.get('startingDate')?.value || '');
-      formData.append('endingDate', this.tournamentForm.get('endingDate')?.value || '');
-      formData.append('startingTime', this.tournamentForm.get('startingTime')?.value || '');
-      formData.append('prize', this.tournamentForm.get('prize')?.value || '');
-      formData.append('teams', JSON.stringify(this.tournamentForm.get('teams')?.value || []));
+      const tournamentData: CreateTournamentRequestBody = this.tournamentForm.value;
 
-      this.tournamentService.createTournament(formData).subscribe(response => {
-        console.log(response);
-        // Gestisci la risposta del backend
+      this.tournamentService.createTournament(tournamentData).subscribe({
+        next: (response) => {
+          console.log('Tournament created:', response);
+          this.loadTournaments();
+        },
+        error: (error) => {
+          console.error('Error creating tournament:', error);
+        }
       });
     }
+  }
+
+  getGameByName(name: string): void {
+    this.gameService.getGameByName(name).subscribe({
+      next: (game) => {
+        this.selectedGame = game;
+        console.log('Game fetched by name:', this.selectedGame);
+        // Aggiungi il codice per gestire il gioco ottenuto, ad esempio:
+        this.tournamentForm.patchValue({ game: this.selectedGame?.name });  // Usa il nome del gioco
+      },
+      error: (error) => {
+        console.error('Error fetching game by name:', error);
+      }
+    });
+  }
+
+  loadGames(): void {
+    this.gameService.getAllGames().subscribe({
+      next: (page) => {
+        this.availableGames = page.content; 
+        console.log('Available games:', this.availableGames);
+      },
+      error: (error) => {
+        console.error('Error fetching games:', error);
+      }
+    });
+  }
+
+  onGameChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedGameName = selectElement.value;
+    this.getGameByName(selectedGameName);
   }
 }

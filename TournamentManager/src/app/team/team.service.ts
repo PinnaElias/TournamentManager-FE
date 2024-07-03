@@ -43,7 +43,6 @@ export class TeamService {
     return this.http.delete<DeleteTeamResponseBody>(`${this.baseUrl}/${id}`);
   }
 
-  // Aggiunto il metodo per iscrivere un team a un torneo
   registerTeamToTournament(tournamentId: string, teamId: string): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${teamId}/register/${tournamentId}`, {});
   }

@@ -1,10 +1,15 @@
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
-import { Tournament, CreateTournamentRequestBody, UpdateTournamentRequestBody, Page } from 'src/app/models/tournament.model';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Tournament, CreateTournamentRequestBody, UpdateTournamentRequestBody, Page, MatchState } from 'src/app/models/tournament.model';
 import { Game } from 'src/app/models/game.model';
 import { GameService } from '../game/game.service';
 import { TournamentService } from './tournament.service';
-import { ActivatedRoute } from '@angular/router';
+import { BracketType } from '../models/bracket.model';
+import { Bracket, CreateBracketRequestBody, UpdateBracketRequestBody } from '../models/bracket.model';
+import { Team } from '../models/team.model';
+import { FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-tournament',
@@ -13,109 +18,124 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class TournamentComponent implements OnInit {
   tournaments: Tournament[] = [];
-  games: Game[] = [];
-  editTournament: Tournament | null = null;
-  isCreateModalOpen = false;
-  isEditModalOpen = false;
+  bracketTypes: BracketType[] = [
+    BracketType.SINGLE_ELIMINATION,
+    BracketType.DOUBLE_ELIMINATION,
+    BracketType.ROUND_ROBIN,
+    BracketType.LADDER_TOURNAMENT
+  ];
+  availableTeams: Team[] = []; // Squadre disponibili
+  tournamentForm: FormGroup;
+  bracketForm: FormGroup;
+
+  @ViewChild('bracketModal') bracketModal!: ElementRef<HTMLDivElement>;
 
   constructor(
-    private tournamentService: TournamentService,
-    private gameService: GameService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+    private fb: FormBuilder,
+    private tournamentService: TournamentService
+  ) {
+    this.tournamentForm = this.fb.group({
+      name: ['', Validators.required],
+      avatar: [''],
+      description: [''],
+      bracketType: ['', Validators.required],
+      startingDate: [''],
+      endingDate: [''],
+      startingTime: [''],
+      prize: [''],
+      teams: [[]]  // Gestisce la selezione delle squadre come array di IDs
+    });
+
+    this.bracketForm = this.fb.group({
+      bracketType: ['', Validators.required],
+      participants: [[]],
+      winner: [undefined as Team | undefined],  // `undefined` se non c'è vincitore
+      losers: [[]]
+    });
+  }
 
   ngOnInit(): void {
-    this.loadTournaments();
-    this.loadGames();
+    this.tournamentService.getAvailableTeams().subscribe(teams => {
+      this.availableTeams = teams;
+    });
   }
 
-  loadTournaments(): void {
-    this.tournamentService.getAllTournaments().subscribe(
-      (data) => this.tournaments = data.content,  // Assicurati che questo sia corretto
-      (error) => console.error('Error fetching tournaments', error)
-    );
+  onBracketTypeChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedBracketType = selectElement.value as BracketType;
+    this.tournamentForm.patchValue({ bracketType: selectedBracketType });
+    this.createBracketForType(selectedBracketType);
   }
 
-  loadGames(): void {
-    this.gameService.getAllGames().subscribe(
-      (data) => this.games = data.content,  // Assicurati che questo sia corretto
-      (error) => console.error('Error fetching games', error)
-    );
-  }
-
-  openCreateTournamentModal() {
-    this.isCreateModalOpen = true;
-  }
-
-  closeCreateTournamentModal(event?: Event) {
-    if (event) {
-      event.stopPropagation();
-    }
-    this.isCreateModalOpen = false;
-  }
-
-  openEditTournamentModal(tournamentId: string) {
-    // Trova il torneo da modificare
-    this.editTournament = this.tournaments.find(t => t.id === tournamentId) || null;
-    this.isEditModalOpen = true;
-  }
-
-  closeEditTournamentModal(event?: Event) {
-    if (event) {
-      event.stopPropagation();
-    }
-    this.isEditModalOpen = false;
-  }
-
-  stopPropagation(event: Event) {
-    event.stopPropagation();
-  }
-  createTournament(formValues: any): void {
-    const newTournament: CreateTournamentRequestBody = {
-      name: formValues.name,
-      description: formValues.description,
-      game: formValues.game, // Modificato per usare 'game' invece di 'gameId'
-      startingDate: formValues.startingDate,
-      endingDate: formValues.endingDate
+  createBracketForType(type: BracketType): void {
+    const bracket: CreateBracketRequestBody = {
+      bracketType: type,
+      participants: [],  // Inizia con una lista vuota di partecipanti
+      tournament: undefined  // Associa il torneo successivamente
     };
-    this.tournamentService.createTournament(newTournament).subscribe(
-      () => {
-        this.closeCreateTournamentModal();
-        this.loadTournaments();
-      },
-      (error) => console.error('Error creating tournament', error)
-    );
-  }
 
-  updateTournament(): void {
-    if (this.editTournament) {
-      const updatedTournament: UpdateTournamentRequestBody = {
-        name: this.editTournament.name,
-        description: this.editTournament.description,
-        game: this.editTournament.game,  // Modificato per usare 'game' invece di 'gameId'
-        endingDate: this.editTournament.endingDate
-      };
-      if (this.editTournament.id) {
-        this.tournamentService.updateTournament(this.editTournament.id, updatedTournament).subscribe(
-          () => {
-            this.closeEditTournamentModal();
-            this.loadTournaments();
-          },
-          (error) => console.error('Error updating tournament', error)
-        );
+    this.bracketForm.patchValue(bracket);
+
+    if (this.bracketModal?.nativeElement) {
+      const modalElement = this.bracketModal.nativeElement;
+      modalElement.classList.add('show');
+      modalElement.setAttribute('aria-hidden', 'false');
+      modalElement.style.display = 'block';
+
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.addEventListener('click', () => {
+          this.hideBracketModal();
+        });
       }
     }
   }
 
-  deleteTournament(tournamentId: string): void {
-    this.tournamentService.deleteTournament(tournamentId).subscribe(
-      () => this.loadTournaments(),
-      (error) => console.error('Error deleting tournament', error)
-    );
+  hideBracketModal(): void {
+    if (this.bracketModal?.nativeElement) {
+      const modalElement = this.bracketModal.nativeElement;
+      modalElement.classList.remove('show');
+      modalElement.setAttribute('aria-hidden', 'true');
+      modalElement.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.remove();
+      }
+    }
   }
 
-  viewBracket(tournamentId: string): void {
-    this.router.navigate([`/tournaments/${tournamentId}/bracket`]);
+  onBracketSubmit() {
+    const bracketData: UpdateBracketRequestBody = {
+      bracketType: this.bracketForm.get('bracketType')?.value as BracketType,
+      participants: this.bracketForm.get('participants')?.value || [],
+      winner: this.bracketForm.get('winner')?.value || undefined,  // `undefined` se non c'è vincitore
+      losers: this.bracketForm.get('losers')?.value || []
+    };
+
+    console.log(bracketData);
+    // Aggiungi il tuo codice per gestire l'invio del bracket al backend
+
+    this.hideBracketModal();
+  }
+
+  onSubmit() {
+    if (this.tournamentForm.valid) {
+      const formData = new FormData();
+      formData.append('name', this.tournamentForm.get('name')?.value || '');
+      formData.append('avatar', this.tournamentForm.get('avatar')?.value || '');
+      formData.append('description', this.tournamentForm.get('description')?.value || '');
+      formData.append('bracketType', this.tournamentForm.get('bracketType')?.value || '');
+      formData.append('startingDate', this.tournamentForm.get('startingDate')?.value || '');
+      formData.append('endingDate', this.tournamentForm.get('endingDate')?.value || '');
+      formData.append('startingTime', this.tournamentForm.get('startingTime')?.value || '');
+      formData.append('prize', this.tournamentForm.get('prize')?.value || '');
+      formData.append('teams', JSON.stringify(this.tournamentForm.get('teams')?.value || []));
+
+      this.tournamentService.createTournament(formData).subscribe(response => {
+        console.log(response);
+        // Gestisci la risposta del backend
+      });
+    }
   }
 }

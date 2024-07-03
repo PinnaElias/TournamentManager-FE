@@ -1,101 +1,100 @@
-<!-- src/app/components/tournament/tournament.component.html -->
+<div class="container mt-5">
+  <!-- Sezione di Creazione del Torneo -->
+  <div class="container d-flex justify-content-center align-items-center">
+    <h1 class="mb-4 text-light">Create Tournament</h1>
+  </div>
 
-<div class="container">
-  <div class="tournament-container d-flex flex-column align-items-center">
-    <h1 class="text-light mb-4">Tournaments</h1>
-    <div *ngFor="let tournament of tournaments" class="tournament-card p-4 mb-3 shadow-sm">
-      <h2 class="text-light">{{ tournament.name }}</h2>
-      <p class="text-light">{{ tournament.description }}</p>
-      <p class="text-light">Game: {{ tournament.game.name }}</p>
-      <p class="text-light">Starting Date: {{ tournament.startingDate | date:'shortDate' }}</p>
-      <p class="text-light">Ending Date: {{ tournament.endingDate | date:'shortDate' }}</p>
-      <div class="d-flex gap-2 mt-3">
-        <button (click)="viewBracket(tournament.id)" class="btn btn-info">View Bracket</button>
-        <button (click)="openEditTournamentModal(tournament.id)" class="btn btn-warning">Edit</button>
-        <button (click)="deleteTournament(tournament.id)" class="btn btn-danger">Delete</button>
-      </div>
-    </div>
-    <button (click)="openCreateTournamentModal()" class="btn btn-success mt-3">Create Tournament</button>
-
-    <!-- Create Tournament Modal -->
-    <div class="modal" [ngClass]="{'show': isCreateModalOpen}" (click)="closeCreateTournamentModal($event)">
-      <div class="modal-content p-4" (click)="stopPropagation($event)">
-        <button type="button" class="btn-close" aria-label="Close" (click)="closeCreateTournamentModal($event)"></button>
-        <h2 class="text-light">Create Tournament</h2>
-        <form (ngSubmit)="createTournament(createTournamentForm.value)" #createTournamentForm="ngForm">
-          <div class="mb-3">
-            <label for="name" class="text-light fw-bold">Name</label>
-            <input type="text" id="name" name="name" ngModel class="form-control" placeholder="Name" required />
-          </div>
-
-          <div class="mb-3">
-            <label for="description" class="text-light fw-bold">Description</label>
-            <input type="text" id="description" name="description" ngModel class="form-control" placeholder="Description" required />
-          </div>
-
-          <div class="mb-3">
-            <label for="game" class="text-light fw-bold">Game</label>
-            <select id="game" name="game" ngModel class="form-select" #game="ngModel" required>
-              <option *ngFor="let game of games" [ngValue]="game">{{ game.name }}</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label for="startingDate" class="text-light fw-bold">Starting Date</label>
-            <input type="date" id="startingDate" name="startingDate" ngModel class="form-control" placeholder="Starting Date" required />
-          </div>
-
-          <div class="mb-3">
-            <label for="endingDate" class="text-light fw-bold">Ending Date</label>
-            <input type="date" id="endingDate" name="endingDate" ngModel class="form-control" placeholder="Ending Date" required />
-          </div>
-
-          <div class="d-flex justify-content-between mt-3">
-            <button type="submit" class="btn btn-success">Create</button>
-            <button type="button" (click)="closeCreateTournamentModal($event)" class="btn btn-secondary">Cancel</button>
-          </div>
-        </form>
+  <!-- Form per la creazione del torneo -->
+  <form [formGroup]="tournamentForm" (ngSubmit)="onSubmit()" class="bg-light p-4 rounded shadow-sm">
+    <div class="form-group mb-3">
+      <label for="name" class="form-label">Nome del Torneo</label>
+      <input type="text" id="name" formControlName="name" class="form-control"
+        placeholder="Inserisci il nome del torneo" required>
+      <div *ngIf="tournamentForm.get('name')?.invalid && tournamentForm.get('name')?.touched" class="text-danger">
+        Il nome del torneo è obbligatorio.
       </div>
     </div>
 
-    <!-- Edit Tournament Modal -->
-    <div class="modal" [ngClass]="{'show': isEditModalOpen}" (click)="closeEditTournamentModal($event)">
-      <div class="modal-content p-4" (click)="stopPropagation($event)">
-        <button type="button" class="btn-close" aria-label="Close" (click)="closeEditTournamentModal($event)"></button>
-        <h2 class="text-light">Edit Tournament</h2>
-        <form (ngSubmit)="updateTournament()" #editTournamentForm="ngForm">
-          <div class="mb-3">
-            <label for="name" class="text-light fw-bold">Name</label>
-            <input type="text" id="name" name="name" [(ngModel)]="editTournament!.name" class="form-control" />
-          </div>
+    <div class="form-group mb-3">
+      <label for="avatar" class="form-label">Avatar del Torneo (URL)</label>
+      <input type="text" id="avatar" formControlName="avatar" class="form-control"
+        placeholder="Inserisci l'URL dell'avatar">
+    </div>
 
-          <div class="mb-3">
-            <label for="description" class="text-light fw-bold">Description</label>
-            <input type="text" id="description" name="description" [(ngModel)]="editTournament!.description" class="form-control" />
-          </div>
+    <div class="form-group mb-3">
+      <label for="description" class="form-label">Descrizione</label>
+      <textarea id="description" formControlName="description" class="form-control"
+        placeholder="Inserisci una descrizione"></textarea>
+    </div>
 
-          <div class="mb-3">
-            <label for="game" class="text-light fw-bold">Game</label>
-            <select id="game" name="game" [(ngModel)]="editTournament!.game" class="form-select">
-              <option *ngFor="let game of games" [ngValue]="game">{{ game.name }}</option>
-            </select>
-          </div>
+    <div class="form-group mb-3">
+      <label for="bracketType" class="form-label">Tipo di Bracket</label>
+      <select id="bracketType" formControlName="bracketType" (change)="onBracketTypeChange($event)" class="form-select"
+        required>
+        <option value="" disabled selected>Seleziona il formato del torneo</option>
+        <option *ngFor="let type of bracketTypes" [value]="type">{{ type }}</option>
+      </select>
+    </div>
 
-          <div class="mb-3">
-            <label for="startingDate" class="text-light fw-bold">Starting Date</label>
-            <input type="date" id="startingDate" name="startingDate" [(ngModel)]="editTournament!.startingDate" class="form-control" />
-          </div>
+    <div *ngIf="tournamentForm.get('bracketType')?.value" class="form-group mb-3">
+      <label for="teams" class="form-label">Seleziona le Squadre</label>
+      <select id="teams" formControlName="teams" class="form-select" multiple>
+        <option *ngFor="let team of availableTeams" [value]="team.id">{{ team.name }}</option>
+      </select>
+    </div>
 
-          <div class="mb-3">
-            <label for="endingDate" class="text-light fw-bold">Ending Date</label>
-            <input type="date" id="endingDate" name="endingDate" [(ngModel)]="editTournament!.endingDate" class="form-control" />
-          </div>
+    <div class="form-group mb-3">
+      <label for="startingDate" class="form-label">Data di Inizio</label>
+      <input type="date" id="startingDate" formControlName="startingDate" class="form-control">
+    </div>
 
-          <div class="d-flex justify-content-between mt-3">
-            <button type="submit" class="btn btn-warning">Update</button>
-            <button type="button" (click)="closeEditTournamentModal($event)" class="btn btn-secondary">Cancel</button>
-          </div>
-        </form>
+    <div class="form-group mb-3">
+      <label for="endingDate" class="form-label">Data di Fine</label>
+      <input type="date" id="endingDate" formControlName="endingDate" class="form-control">
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="startingTime" class="form-label">Orario di Inizio</label>
+      <input type="time" id="startingTime" formControlName="startingTime" class="form-control">
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="prize" class="form-label">Premio</label>
+      <input type="text" id="prize" formControlName="prize" class="form-control" placeholder="Inserisci il premio">
+    </div>
+
+    <button type="submit" class="btn btn-success" [disabled]="!tournamentForm.valid">Crea Torneo</button>
+  </form>
+
+  <!-- Modal per la selezione del bracket -->
+  <div class="modal fade" id="bracketModal" tabindex="-1" aria-labelledby="bracketModalLabel" aria-hidden="true" #bracketModal>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bracketModalLabel">Seleziona il Bracket</h5>
+          <button type="button" class="btn-close" (click)="hideBracketModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="bracketForm" (ngSubmit)="onBracketSubmit()">
+            <div class="form-group mb-3">
+              <label for="bracketType" class="form-label">Tipo di Bracket</label>
+              <select id="bracketType" formControlName="bracketType" class="form-select"
+                (change)="onBracketTypeChange($event)">
+                <option value="" disabled selected>Seleziona il tipo di bracket</option>
+                <option *ngFor="let type of bracketTypes" [value]="type">{{ type }}</option>
+              </select>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="participants" class="form-label">Partecipanti</label>
+              <select id="participants" formControlName="participants" class="form-select" multiple>
+                <option *ngFor="let team of availableTeams" [value]="team.id">{{ team.name }}</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-outline-success me-2">Crea Bracket</button>
+            <button type="button" class="btn btn-outline-danger mx-2" (click)="hideBracketModal()">Chiudi</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

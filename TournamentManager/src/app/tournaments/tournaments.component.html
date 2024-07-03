@@ -16,6 +16,14 @@
     </div>
 
     <div class="form-group mb-3">
+      <label for="game" class="form-label">Nome del Gioco</label>
+      <select id="game" formControlName="game" (change)="onGameChange($event)" class="form-select" required>
+        <option value="" disabled selected>Seleziona il gioco</option>
+        <option *ngFor="let game of availableGames" [value]="game.name">{{ game.name }}</option>
+      </select>
+    </div>
+
+    <div class="form-group mb-3">
       <label for="avatar" class="form-label">Avatar del Torneo (URL)</label>
       <input type="text" id="avatar" formControlName="avatar" class="form-control"
         placeholder="Inserisci l'URL dell'avatar">
@@ -62,47 +70,46 @@
       <label for="prize" class="form-label">Premio</label>
       <input type="text" id="prize" formControlName="prize" class="form-control" placeholder="Inserisci il premio">
     </div>
-
-    <div class="form-group mb-3">
-      <label for="game" class="form-label">Nome del Gioco</label>
-      <select id="game" formControlName="game" (change)="onGameChange($event)" class="form-select" required>
-        <option value="" disabled selected>Seleziona il gioco</option>
-        <option *ngFor="let game of availableGames" [value]="game.name">{{ game.name }}</option>
-      </select>
-    </div>
     <button type="submit" class="btn btn-success" [disabled]="!tournamentForm.valid">Crea Torneo</button>
   </form>
 
-  <!-- Modal per la selezione del bracket -->
-  <div class="modal fade" id="bracketModal" tabindex="-1" aria-labelledby="bracketModalLabel" aria-hidden="true"
-    #bracketModal>
-    <div class="modal-dialog">
+  <!-- Modal for Bracket Creation -->
+  <div #bracketModal class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="bracketModalLabel">Crea Bracket</h5>
-          <button type="button" class="btn-close" (click)="hideBracketModal()" aria-label="Close"></button>
+          <h5 class="modal-title">Create Bracket</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="hideBracketModal()"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="bracketForm" (ngSubmit)="onBracketSubmit()">
-            <div class="form-group mb-3">
-              <label for="bracketType" class="form-label">Tipo di Bracket</label>
+            <div class="mb-3">
+              <label for="bracketType" class="form-label">Bracket Type</label>
               <select id="bracketType" formControlName="bracketType" class="form-select"
                 (change)="onBracketTypeChange($event)">
-                <option value="" disabled selected>Seleziona il tipo di bracket</option>
                 <option *ngFor="let type of bracketTypes" [value]="type">{{ type }}</option>
               </select>
             </div>
-
-            <div class="form-group mb-3">
-              <label for="participants" class="form-label">Partecipanti</label>
-              <select id="participants" formControlName="participants" class="form-select" multiple>
-                <option *ngFor="let team of availableTeams" [value]="team.id">
-                  <strong>{{ team.name }}</strong>
-                </option>
+            <div class="mb-3">
+              <label for="teamSelect" class="form-label">Add Participants</label>
+              <select id="teamSelect" class="form-select" multiple (change)="onAddTeamToBracket($event)">
+                <option *ngFor="let team of availableTeams" [value]="team.id">{{ team.name }}</option>
               </select>
             </div>
-            <button type="submit" class="btn btn-outline-success me-2">Crea Bracket</button>
-            <button type="button" class="btn btn-outline-danger mx-2" (click)="hideBracketModal()">Chiudi</button>
+            <div class="mb-3">
+              <label for="selectedParticipants" class="form-label">Selected Participants</label>
+              <ul class="list-group">
+                <li class="list-group-item" *ngFor="let team of bracketParticipants">
+                  {{ team.name }}
+                  <button type="button" class="btn btn-danger btn-sm float-end"
+                    (click)="onRemoveTeamFromBracket(team)">Remove</button>
+                </li>
+              </ul>
+            </div>
+            <div class="container d-flex align-center justify-center">
+            <button type="submit" class="btn btn-outline-success mx-2">Create Bracket</button>
+            <button type="button" class="btn btn-secondary mx-2" (click)="hideBracketModal()">Close Bracket</button>
+          </div>
           </form>
         </div>
       </div>

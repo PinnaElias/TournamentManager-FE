@@ -7,6 +7,9 @@ import { Team } from '../models/team.model';
 import { CreateBracketRequestBody, UpdateBracketRequestBody } from '../models/bracket.model';
 import { GameService } from '../game/game.service';
 import { Game } from '../models/game.model';
+import { BracketService } from '../bracket/bracket.service';
+import { TeamService } from '../team/team.service';
+
 
 @Component({
   selector: 'app-tournament',
@@ -27,13 +30,18 @@ export class TournamentComponent implements OnInit {
   bracketForm: FormGroup;
   gameName: string = '';  // Aggiungi una variabile per memorizzare il nome del gioco
   selectedGame?: Game;  // Aggiungi una variabile per memorizzare il gioco selezionato
+  bracketParticipants: Team[] = [];
+  selectedTeams: Team[] = [];  // Squadre selezionate per il bracket
+  selectedWinner?: Team;  // Vincitore del bracket
 
   @ViewChild('bracketModal') bracketModal!: ElementRef<HTMLDivElement>;
 
   constructor(
     private fb: FormBuilder,
     private tournamentService: TournamentService,
-    private gameService: GameService  // Aggiungi GameService al costruttore
+    private gameService: GameService,
+    private bracketService: BracketService,
+    private teamService: TeamService
   ) {
     this.tournamentForm = this.fb.group({
       name: ['', Validators.required],
@@ -45,7 +53,7 @@ export class TournamentComponent implements OnInit {
       endingDate: [''],
       startingTime: [''],
       prize: [''],
-      game: ['', Validators.required] // Campo per il gioco
+      game: ['', Validators.required]
     });
 
     this.bracketForm = this.fb.group({
@@ -86,24 +94,23 @@ export class TournamentComponent implements OnInit {
 
   onBracketTypeChange(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    const selectedBracketType = selectElement.value as BracketType;
-    this.tournamentForm.patchValue({ bracketType: selectedBracketType });
-    this.createBracketForType(selectedBracketType);
+    const selectedBracketType = selectElement?.value as BracketType;
+  
+    if (selectedBracketType) {
+      this.tournamentForm.patchValue({ bracketType: selectedBracketType });
+      this.createBracketForType(selectedBracketType);
+    }
   }
+  
 
   createBracketForType(type: BracketType): void {
-    const bracket: CreateBracketRequestBody = {
-      bracketType: type,
-      participants: [],  // Inizia con una lista vuota di partecipanti
-      tournament: undefined  // Associa il torneo successivamente
-    };
-
     this.bracketForm.patchValue({
       bracketType: type,
       participants: [],  // Lista vuota di partecipanti
       winner: undefined,  // Nessun vincitore inizialmente
       losers: []  // Lista vuota di perdenti
     });
+    this.selectedTeams = [];  // Pulisci la lista delle squadre selezionate
 
     if (this.bracketModal?.nativeElement) {
       const modalElement = this.bracketModal.nativeElement;
@@ -119,7 +126,7 @@ export class TournamentComponent implements OnInit {
       }
     }
   }
-
+  
   hideBracketModal(): void {
     if (this.bracketModal?.nativeElement) {
       const modalElement = this.bracketModal.nativeElement;
@@ -139,19 +146,53 @@ export class TournamentComponent implements OnInit {
 
   onBracketSubmit() {
     if (this.bracketForm.valid) {
-      const bracketData: UpdateBracketRequestBody = {
+      const bracketData: CreateBracketRequestBody = {
         bracketType: this.bracketForm.get('bracketType')?.value as BracketType,
-        participants: this.bracketForm.get('participants')?.value || [],
-        winner: this.bracketForm.get('winner')?.value || undefined,  // `undefined` se non c'è vincitore
-        losers: this.bracketForm.get('losers')?.value || []
+        participants: this.bracketForm.get('participants')?.value || [],  // Usa i partecipanti selezionati
+        tournament: undefined,  // Associa il torneo successivamente
       };
 
-      console.log('Bracket Form Submitted:', bracketData);
-      // Aggiungi il tuo codice per gestire l'invio del bracket al backend
-
-      this.hideBracketModal();
+      this.bracketService.createBracket(bracketData).subscribe({
+        next: (response) => {
+          console.log('Bracket created:', response);
+          this.hideBracketModal();
+        },
+        error: (error) => {
+          console.error('Error creating bracket:', error);
+        }
+      });
     } else {
       console.error('Bracket Form is invalid:', this.bracketForm.errors);
+    }
+  }
+
+  onAddTeamToBracket(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedTeamIds = Array.from(selectElement.selectedOptions).map(option => (option as HTMLOptionElement).value);
+
+    selectedTeamIds.forEach(id => {
+      const team = this.availableTeams.find(t => t.id === id);
+      if (team && !this.bracketParticipants.find(t => t.id === team.id)) {
+        this.bracketParticipants.push(team);
+      }
+    });
+
+    this.bracketForm.patchValue({ participants: this.bracketParticipants });
+    // Clear the selected options in the dropdown after adding the teams
+    selectElement.selectedIndex = -1;  // Reset selection
+  }
+  
+  onRemoveTeamFromBracket(team: Team): void {
+    this.bracketParticipants = this.bracketParticipants.filter(t => t.id !== team.id);
+    this.bracketForm.patchValue({ participants: this.bracketParticipants });
+  }
+
+  onSelectLoser(team: Team) {
+    const losers: Team[] = this.bracketForm.get('losers')?.value || [];
+
+    if (!losers.find(t => t.id === team.id)) {
+      losers.push(team);
+      this.bracketForm.patchValue({ losers });
     }
   }
 
@@ -188,7 +229,7 @@ export class TournamentComponent implements OnInit {
   loadGames(): void {
     this.gameService.getAllGames().subscribe({
       next: (page) => {
-        this.availableGames = page.content; 
+        this.availableGames = page.content;
         console.log('Available games:', this.availableGames);
       },
       error: (error) => {
@@ -197,9 +238,22 @@ export class TournamentComponent implements OnInit {
     });
   }
 
+  loadTeamsByGame(gameName: string): void {
+    this.teamService.getTeamsByGame(gameName).subscribe({
+      next: (teams) => {
+        this.availableTeams = teams;
+        console.log('Teams for selected game:', this.availableTeams);
+      },
+      error: (error) => {
+        console.error('Error fetching teams by game:', error);
+      }
+    });
+  }
+
   onGameChange(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    const selectedGameName = selectElement.value;
+    const selectedGameName = selectElement?.value;
     this.getGameByName(selectedGameName);
+    this.loadTeamsByGame(selectedGameName);  // Fetch teams based on the selected game
   }
 }

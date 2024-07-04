@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from './game.service';
 import { Game } from '../models/game.model';
-import { Page } from '../models/team.model';
+import { Page } from '../models/page.model';
 
 @Component({
   selector: 'app-game',
@@ -11,7 +11,7 @@ import { Page } from '../models/team.model';
 export class GameComponent implements OnInit {
   gamesPage!: Page<Game>;
 
-  constructor(private gameService: GameService) {}
+  constructor(private gameService: GameService) { }
 
   ngOnInit(): void {
     this.loadGames();
@@ -21,7 +21,7 @@ export class GameComponent implements OnInit {
     this.gameService.getAllGames().subscribe(
       (data: Page<Game>) => {
         this.gamesPage = data;
-        console.log('Games loaded:', this.gamesPage.content);  
+        console.log('Games loaded:', this.gamesPage.content);
       },
       (error) => {
         console.error('Error loading games:', error);
@@ -32,7 +32,7 @@ export class GameComponent implements OnInit {
   getGameDetails(id: string) {
     this.gameService.getGameById(id).subscribe(
       (game: Game) => {
-        console.log('Game details:', game);  
+        console.log('Game details:', game);
       },
       (error) => {
         console.error('Error loading game details:', error);

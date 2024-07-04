@@ -24,6 +24,7 @@ export class LoginComponent {
         localStorage.setItem('tokenExpiration', expirationDate.toISOString());
 
         console.log('Login successful', response);
+        console.log('token:', token)
         alert('Login successful!');
         this.router.navigate(['/']);
       },

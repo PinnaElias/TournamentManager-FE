@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Match, CreateMatchRequestBody, UpdateMatchRequestBody, DeleteMatchResponseBody, Page } from '../models/match.model';
+import { Match, CreateMatchRequestBody, UpdateMatchRequestBody, DeleteMatchResponseBody } from '../models/match.model';
+import { Page } from '../models/page.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Match, CreateMatchRequestBody, UpdateMatchRequestBody, DeleteMatchRespo
 export class MatchService {
   private baseUrl = 'http://localhost:8081/api/matches';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllMatches(page: number = 0, size: number = 10, sortBy: string = 'id'): Observable<Page<Match>> {
     const params = new HttpParams()

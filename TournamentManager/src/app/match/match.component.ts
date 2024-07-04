@@ -5,10 +5,8 @@ import { TournamentService } from '../tournaments/tournament.service';
 import { TeamService } from '../team/team.service';
 import { BracketService } from '../bracket/bracket.service';
 import { Match, UpdateMatchRequestBody, CreateMatchRequestBody, MatchState } from '../models/match.model';
-import { Tournament, Page } from '../models/tournament.model';
-import { Team } from '../models/team.model';
-import { Bracket } from '../models/bracket.model';
-import { Observable, switchMap } from 'rxjs';
+import { Tournament} from '../models/tournament.model';
+import { Page } from '../models/page.model';
 
 @Component({
   selector: 'app-match',

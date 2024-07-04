@@ -54,14 +54,6 @@ export interface DeleteTournamentResponseBody {
   message: string;
 }
 
-export interface Page<T> {
-  content: T[];
-  totalPages: number;
-  totalElements: number;
-  size: number;
-  number: number;
-}
-
 export enum MatchState {
   PLANNED = 'PLANNED',
   ONGOING = 'ONGOING',

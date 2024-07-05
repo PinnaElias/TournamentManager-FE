@@ -5,75 +5,75 @@
   </div>
 
   <!-- Form per la creazione del torneo -->
-   <div class="container formBody">
-  <form [formGroup]="tournamentForm" (ngSubmit)="onSubmit()" class="p-4 rounded shadow-sm">
-    <div class="form-group mb-3">
-      <label for="name" class="form-label text-light">Tournament Name</label>
-      <input type="text" id="name" formControlName="name" class="form-control"
-        placeholder="Insert a name for the tournament" required>
-      <div *ngIf="tournamentForm.get('name')?.invalid && tournamentForm.get('name')?.touched" class="text-danger">
-        It must have a name.
+  <div class="container formBody">
+    <form [formGroup]="tournamentForm" (ngSubmit)="onSubmit()" class="p-4 rounded shadow-sm">
+      <div class="form-group mb-3">
+        <label for="name" class="form-label text-light">Tournament Name</label>
+        <input type="text" id="name" formControlName="name" class="form-control"
+          placeholder="Insert a name for the tournament" required>
+        <div *ngIf="tournamentForm.get('name')?.invalid && tournamentForm.get('name')?.touched" class="text-danger">
+          It must have a name.
+        </div>
       </div>
-    </div>
 
-    <div class="form-group mb-3">
-      <label for="game" class="form-label text-light">Game</label>
-      <select id="game" formControlName="game" (change)="onGameChange($event)" class="form-select" required>
-        <option value="" disabled selected>Select one of the avaiable games</option>
-        <option *ngFor="let game of availableGames" [value]="game.name">{{ game.name }}</option>
-      </select>
-    </div>
+      <div class="form-group mb-3">
+        <label for="game" class="form-label text-light">Game</label>
+        <select id="game" formControlName="game" (change)="onGameChange($event)" class="form-select" required>
+          <option value="" disabled selected>Select one of the avaiable games</option>
+          <option *ngFor="let game of availableGames" [value]="game.name">{{ game.name }}</option>
+        </select>
+      </div>
 
-    <div class="form-group mb-3">
-      <label for="avatar" class="form-label text-light">Tournament Avatar</label>
-      <input type="text" id="avatar" formControlName="avatar" class="form-control"
-        placeholder="Insert an avatar URL">
-    </div>
+      <div class="form-group mb-3">
+        <label for="avatar" class="form-label text-light">Tournament Avatar</label>
+        <input type="text" id="avatar" formControlName="avatar" class="form-control" placeholder="Insert an avatar URL">
+      </div>
 
-    <div class="form-group mb-3">
-      <label for="description" class="form-label text-light">Description</label>
-      <textarea id="description" formControlName="description" class="form-control"
-        placeholder="Add a brief description!"></textarea>
-    </div>
+      <div class="form-group mb-3">
+        <label for="description" class="form-label text-light">Description</label>
+        <textarea id="description" formControlName="description" class="form-control"
+          placeholder="Add a brief description!"></textarea>
+      </div>
 
-    <div class="form-group mb-3">
-      <label for="bracketType" class="form-label text-light">Bracket Type</label>
-      <select id="bracketType" formControlName="bracketType" (change)="onBracketTypeChange($event)" class="form-select"
-        required>
-        <option value="" disabled selected>Select tournament format</option>
-        <option *ngFor="let type of bracketTypes" [value]="type">{{ type }}</option>
-      </select>
-    </div>
+      <div class="form-group mb-3">
+        <label for="bracketType" class="form-label text-light">Bracket Type</label>
+        <select id="bracketType" formControlName="bracketType" (change)="onBracketTypeChange($event)"
+          class="form-select" required>
+          <option value="" disabled selected>Select tournament format</option>
+          <option *ngFor="let type of bracketTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
 
-    <div *ngIf="tournamentForm.get('bracketType')?.value" class="form-group mb-3">
-      <label for="teams" class="form-label text-light">Select partecipating teams</label>
-      <select id="teams" formControlName="teams" class="form-select" multiple>
-        <option *ngFor="let team of availableTeams" [value]="team.id">{{ team.name }}</option>
-      </select>
-    </div>
+      <!-- Nuova Sezione per la Selezione dei Team -->
+      <div class="form-group mb-3">
+        <label for="teams" class="form-label text-light">Select Participating Teams</label>
+        <select id="teams" formControlName="teams" class="form-select" multiple>
+          <option *ngFor="let team of availableTeams" [value]="team.id">{{ team.name }}</option>
+        </select>
+      </div>
 
-    <div class="form-group mb-3">
-      <label for="startingDate" class="form-label text-light">Starting Date</label>
-      <input type="date" id="startingDate" formControlName="startingDate" class="form-control">
-    </div>
+      <div class="form-group mb-3">
+        <label for="startingDate" class="form-label text-light">Starting Date</label>
+        <input type="date" id="startingDate" formControlName="startingDate" class="form-control">
+      </div>
 
-    <div class="form-group mb-3">
-      <label for="endingDate" class="form-label text-light">Ending Date</label>
-      <input type="date" id="endingDate" formControlName="endingDate" class="form-control">
-    </div>
+      <div class="form-group mb-3">
+        <label for="endingDate" class="form-label text-light">Ending Date</label>
+        <input type="date" id="endingDate" formControlName="endingDate" class="form-control">
+      </div>
 
-    <div class="form-group mb-3">
-      <label for="startingTime" class="form-label text-light">Starting Time</label>
-      <input type="time" id="startingTime" formControlName="startingTime" class="form-control">
-    </div>
+      <div class="form-group mb-3">
+        <label for="startingTime" class="form-label text-light">Starting Time</label>
+        <input type="time" id="startingTime" formControlName="startingTime" class="form-control">
+      </div>
 
-    <div class="form-group mb-3">
-      <label for="prize" class="form-label text-light">Prize</label>
-      <input type="text" id="prize" formControlName="prize" class="form-control" placeholder="Inserisci il premio">
-    </div>
-    <button type="submit" class="btn btn-success" [disabled]="!tournamentForm.valid">Crea Torneo</button>
-  </form>
-</div>
+      <div class="form-group mb-3">
+        <label for="prize" class="form-label text-light">Prize</label>
+        <input type="text" id="prize" formControlName="prize" class="form-control" placeholder="Inserisci il premio">
+      </div>
+      <button type="submit" class="btn btn-success" >Crea Torneo</button> <!--[disabled]="!tournamentForm.valid"-->
+    </form>
+  </div>
   <!-- Modal for Bracket Creation -->
   <div #bracketModal class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -108,9 +108,9 @@
               </ul>
             </div>
             <div class="container d-flex align-center justify-center">
-            <button type="submit" class="btn btn-outline-success mx-2">Create Bracket</button>
-            <button type="button" class="btn btn-secondary mx-2" (click)="hideBracketModal()">Close Bracket</button>
-          </div>
+              <button type="submit" class="btn btn-outline-success mx-2">Create Bracket</button>
+              <button type="button" class="btn btn-secondary mx-2" (click)="hideBracketModal()">Close Bracket</button>
+            </div>
           </form>
         </div>
       </div>

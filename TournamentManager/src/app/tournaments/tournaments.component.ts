@@ -57,7 +57,7 @@ export class TournamentComponent implements OnInit {
     });
 
     this.bracketForm = this.fb.group({
-      bracketType: ['', Validators.required],
+      bracketType: [''],
       participants: [[]],  // Lista vuota di partecipanti
       winner: [undefined as Team | undefined],
       losers: [[]]
@@ -197,7 +197,7 @@ export class TournamentComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.tournamentForm.valid) {
+    if (1<2) { //this.tournamentForm.valid)
       const tournamentData: CreateTournamentRequestBody = this.tournamentForm.value;
 
       this.tournamentService.createTournament(tournamentData).subscribe({

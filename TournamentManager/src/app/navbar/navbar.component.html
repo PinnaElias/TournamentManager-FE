@@ -29,14 +29,18 @@
     </ul>
 
 
-    <ul class="navbar-nav mx-3">
-      <li *ngIf="currentUser" class="nav-item d-flex align-items-center">
-        <span class="nav-link text-light">{{ currentUser.username }}</span>
-        <img *ngIf="currentUser.avatarUrl" [src]="currentUser.avatarUrl" alt="Profile Picture" class="ms-2 propic" style="width: 30px; height: 30px;">
-      </li>
-      <li *ngIf="!currentUser" class="nav-item">
-        <a class="nav-link text-light" routerLink="/login">Login</a>
-      </li>
-    </ul>
+    <div class="navbar-nav mx-4">
+      <ng-container *ngIf="currentUser; else loggedOut">
+        <div class="nav-item d-flex align-items-center">
+          <span class="nav-link text-light" style="font-size: 1.1em;">{{ currentUser.username }}</span>
+          <img *ngIf="currentUser.avatarUrl" [src]="currentUser.avatarUrl" alt="Profile Picture" class="ms-2 propic" style="width: 30px; height: 30px;">
+        </div>
+      </ng-container>
+      <ng-template #loggedOut>
+        <div class="nav-item">
+          <a class="nav-link text-light" routerLink="/login">Login</a>
+        </div>
+      </ng-template>
+    </div>
   </div>
 </nav>

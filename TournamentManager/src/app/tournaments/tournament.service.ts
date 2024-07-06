@@ -73,4 +73,14 @@ export class TournamentService {
   getCurrentUser(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/users/me`);
   }
+
+  addTeamToTournament(tournamentId: string, teamId: string): Observable<Tournament> {
+    const url = `${this.baseUrl}/${tournamentId}/add-team/${teamId}`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('token') // Aggiungi il token JWT se usi l'autenticazione
+    });
+
+    return this.http.post<Tournament>(url, {}, { headers });
+  }
 }

@@ -8,12 +8,12 @@
     <div class="card p-5 shadow-sm mb-3" style="width: 100%; max-width: 900px;">
       <img *ngIf="tournament.avatar" [src]="tournament.avatar" class="card-img-top" alt="Tournament Image">
       <div class="card-body text-center">
-        <h4 class="card-title">{{tournament.name}} - {{tournament.game?.name}}</h4>
-        <p class="card-text">{{tournament.description}}</p>
-        <p class="card-text">
-          <small class="text-muted">{{tournament.startingDate | date}} - {{tournament.prize}}</small>
-        </p>
-        <button (click)="registerTeam(tournament.id)" class="btn btn-primary">Register Team</button>
+        <h2 class="card-title text-light">{{tournament.name}} - {{tournament.game?.name}}</h2>
+        <h3 class="card-text text-light">{{tournament.description}}</h3>
+        <h4 class="card-text text-light">
+          <small class="text-success">{{tournament.startingDate | date}} - {{tournament.prize}}</small>
+        </h4>
+        <button (click)="registerTeam(tournament.id)" class="btn btn-success mt-3">Register Team</button>
       </div>
     </div>
   </div>

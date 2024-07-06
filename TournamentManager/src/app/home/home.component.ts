@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.gameService.getAllGames();
     this.getTournaments();
+    this.getCurrentUserTeam();
   }
 
   getTournaments(): void {
@@ -47,7 +48,8 @@ export class HomeComponent implements OnInit {
 
   getCurrentUserTeam(): void {
     this.authService.getCurrentUser().subscribe(user => {
-      this.teamId = user.team.id; // Assicurati che la struttura dei dati corrisponda
+      this.teamId = user.team.id;
+      console.log(this.teamId)
     }, error => {
       console.error('Error fetching current user:', error);
     });
@@ -58,7 +60,7 @@ export class HomeComponent implements OnInit {
       console.error('No team found for current user');
       return;
     }
-    this.teamService.registerTeamToTournament(tournamentId, this.teamId).subscribe(() => {
+    this.tournamentService.addTeamToTournament(tournamentId, this.teamId).subscribe(() => {
       console.log('Team registered successfully');
       // Puoi anche aggiungere logica aggiuntiva per aggiornare lo stato o notificare l'utente
     }, error => {

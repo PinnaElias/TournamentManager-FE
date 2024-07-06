@@ -1,3 +1,4 @@
+<!-- create-team.component.html -->
 <div class="container">
   <div class="login-container d-flex justify-content-center align-items-center min-vh-100">
     <div class="col-md-6">
@@ -8,18 +9,32 @@
             <div class="form-group mb-3">
               <label for="name" class="text-light fw-bold">Name:</label>
               <input type="text" class="form-control" id="name" formControlName="name" required>
+              <div *ngIf="createForm.get('name')?.invalid && createForm.get('name')?.touched" class="text-danger">
+                <div *ngIf="createForm.get('name')?.errors?.['required']">Name is required.</div>
+              </div>
             </div>
             <div class="form-group mb-3">
               <label for="avatar" class="text-light fw-bold">Avatar URL:</label>
-              <input type="text" class="form-control" id="avatar" formControlName="avatar" required>
+              <input type="text" class="form-control" id="avatar" formControlName="avatar">
+              <div *ngIf="createForm.get('avatar')?.invalid && createForm.get('avatar')?.touched" class="text-danger">
+                <div *ngIf="createForm.get('avatar')?.errors?.['pattern']">Enter a valid URL.</div>
+              </div>
             </div>
             <div class="form-group mb-3">
               <label for="game" class="text-light fw-bold">Game:</label>
-              <input type="text" class="form-control" id="game" formControlName="game" required>
+              <select class="form-control" id="game" formControlName="game" required>
+                <option *ngFor="let game of games" [value]="game.id">{{ game.name }}</option>
+              </select>
+              <div *ngIf="createForm.get('game')?.invalid && createForm.get('game')?.touched" class="text-danger">
+                <div *ngIf="createForm.get('game')?.errors?.['required']">Game is required.</div>
+              </div>
             </div>
             <div class="form-group mb-3">
               <label for="nationality" class="text-light fw-bold">Nationality:</label>
               <input type="text" class="form-control" id="nationality" formControlName="nationality" required>
+              <div *ngIf="createForm.get('nationality')?.invalid && createForm.get('nationality')?.touched" class="text-danger">
+                <div *ngIf="createForm.get('nationality')?.errors?.['required']">Nationality is required.</div>
+              </div>
             </div>
             <div class="d-grid">
               <button type="submit" class="btn btn-primary mt-3" [disabled]="createForm.invalid">Create Team</button>

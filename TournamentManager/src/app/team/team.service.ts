@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Team, CreateTeamRequestBody, UpdateTeamRequestBody, DeleteTeamResponseBody, Page } from '../models/team.model';
+import { Team, CreateTeamRequestBody, UpdateTeamRequestBody, DeleteTeamResponseBody} from '../models/team.model';
+import { Page } from '../models/page.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeamService {
-
   private baseUrl = 'http://localhost:8081/api/teams';
 
   constructor(private http: HttpClient) { }
@@ -28,10 +28,10 @@ export class TeamService {
     return this.http.get<Team[]>(`${this.baseUrl}/game/${gameId}`);
   }
 
-  createTeam(team: CreateTeamRequestBody): Observable<Team> {
-    return this.http.post<Team>(this.baseUrl, team);
+  createTeam(teamData: CreateTeamRequestBody): Observable<Team> {
+    return this.http.post<Team>(this.baseUrl, teamData);
   }
-
+  
   addUserToTeam(teamId: string, userId: string): Observable<Team> {
     return this.http.put<Team>(`${this.baseUrl}/${teamId}/addUser/${userId}`, {});
   }
@@ -42,5 +42,9 @@ export class TeamService {
 
   deleteTeam(id: string): Observable<DeleteTeamResponseBody> {
     return this.http.delete<DeleteTeamResponseBody>(`${this.baseUrl}/${id}`);
+  }
+
+  registerTeamToTournament(tournamentId: string, teamId: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${teamId}/register/${tournamentId}`, {});
   }
 }

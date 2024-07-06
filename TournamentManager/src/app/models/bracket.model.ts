@@ -5,9 +5,9 @@ export interface Bracket {
   id: string;
   bracketType: BracketType;
   tournament?: Tournament;
-  participants: Team[];
+  participants?: Team[];
   winner?: Team;
-  losers: Team[];
+  losers?: Team[];
 }
 
 export interface CreateBracketRequestBody {
@@ -22,6 +22,10 @@ export interface UpdateBracketRequestBody {
   participants?: Team[];
   winner?: Team;
   losers?: Team[];
+}
+
+export interface DeleteBracketResponseBody {
+  message: string;
 }
 
 export enum BracketType {

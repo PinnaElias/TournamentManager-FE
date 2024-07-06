@@ -116,3 +116,8 @@ option strong {
   background-color: #344364;
   margin: 0px 20px;
 }
+
+.form-select option {
+  color: #000 !important; /* Colore del testo delle opzioni */
+  background-color: #fff !important; /* Colore di sfondo delle opzioni */
+}

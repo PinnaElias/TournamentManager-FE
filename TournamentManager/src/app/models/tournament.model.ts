@@ -6,12 +6,12 @@ import { Bracket } from './bracket.model';
 export interface Tournament {
   id: string;
   avatar?: string;
-  game: Game;
+  game?: Game;
   name: string;
-  participants: Team[];
-  bracket?: Bracket;
-  tournamentState: MatchState;
-  tournamentManager: User;
+  participants?: Team[];
+ // bracket?: Bracket;
+  tournamentState?: MatchState;
+  tournamentManager?: User;
   description: string;
   prize?: string;
   startingDate?: string;
@@ -23,10 +23,10 @@ export interface Tournament {
 
 export interface CreateTournamentRequestBody {
   avatar?: string;
-  game: Game;
+  game?: Game;
   name: string;
   participants?: Team[];
-  bracket?: Bracket;
+  //bracket?: Bracket;
   tournamentState?: MatchState;
   tournamentManager?: User;
   description: string;

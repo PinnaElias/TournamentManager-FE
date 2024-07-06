@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { Tournament, CreateTournamentRequestBody, UpdateTournamentRequestBody, DeleteTournamentResponseBody } from '../models/tournament.model';
 import { Team } from '../models/team.model';
 import { map } from 'rxjs/operators';
-import { GameService } from '../game/game.service';
 import { Game } from '../models/game.model';
 import { Page } from '../models/page.model';
 
@@ -16,7 +15,7 @@ export class TournamentService {
   private teamUrl = 'http://localhost:8081/api/teams';
   private gameUrl = 'http://localhost:8081/api/games';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllTournaments(): Observable<Page<Tournament>> {
     return this.http.get<Page<Tournament>>(this.baseUrl);
@@ -33,7 +32,7 @@ export class TournamentService {
           return response.content;
         } else {
           console.error('Invalid response format for available teams:', response);
-          return [];  // Restituisce un array vuoto in caso di errore
+          return [];
         }
       })
     );
@@ -53,9 +52,12 @@ export class TournamentService {
   }
 
   createTournament(tournament: CreateTournamentRequestBody): Observable<Tournament> {
-    return this.http.post<Tournament>(this.baseUrl, tournament, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    });
+    console.log(tournament);
+    return this.http.post<Tournament>(this.baseUrl, tournament,
+      {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+      }
+    );
   }
 
   updateTournament(id: string, tournament: UpdateTournamentRequestBody): Observable<Tournament> {

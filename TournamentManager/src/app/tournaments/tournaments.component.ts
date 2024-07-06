@@ -9,6 +9,9 @@ import { GameService } from '../game/game.service';
 import { Game } from '../models/game.model';
 import { BracketService } from '../bracket/bracket.service';
 import { TeamService } from '../team/team.service';
+import { AuthService } from '../auth/auth.service';
+import { switchMap } from 'rxjs';
+import { error } from 'jquery';
 
 
 @Component({
@@ -41,14 +44,15 @@ export class TournamentComponent implements OnInit {
     private tournamentService: TournamentService,
     private gameService: GameService,
     private bracketService: BracketService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private authservice: AuthService
   ) {
     this.tournamentForm = this.fb.group({
       name: ['', Validators.required],
       avatar: [''],
       description: [''],
-      bracketType: ['', Validators.required],
-      teams: [[]],
+      
+      participants: [[]],
       startingDate: [''],
       endingDate: [''],
       startingTime: [''],
@@ -57,11 +61,12 @@ export class TournamentComponent implements OnInit {
     });
 
     this.bracketForm = this.fb.group({
-      bracketType: [''],
+      bracket: [''],
       participants: [[]],  // Lista vuota di partecipanti
       winner: [undefined as Team | undefined],
       losers: [[]]
     });
+    bracket: ['']
   }
 
   ngOnInit(): void {
@@ -168,7 +173,8 @@ export class TournamentComponent implements OnInit {
 
   onAddTeamToBracket(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
-    const selectedTeamIds = Array.from(selectElement.selectedOptions).map(option => (option as HTMLOptionElement).value);
+    const selectedTeamIds = Array.from(selectElement.selectedOptions)
+    .map(option => (option as HTMLOptionElement).value);
 
     selectedTeamIds.forEach(id => {
       const team = this.availableTeams.find(t => t.id === id);
@@ -197,19 +203,21 @@ export class TournamentComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (1<2) { //this.tournamentForm.valid)
-      const tournamentData: CreateTournamentRequestBody = this.tournamentForm.value;
-
-      this.tournamentService.createTournament(tournamentData).subscribe({
-        next: (response) => {
-          console.log('Tournament created:', response);
-          this.loadTournaments();
-        },
-        error: (error) => {
-          console.error('Error creating tournament:', error);
-        }
-      });
-    }
+    this.authservice.getCurrentUser().pipe(switchMap((user) => {
+      if (this.tournamentForm.valid) { 
+        const tournamentData: CreateTournamentRequestBody = this.tournamentForm.value;
+        console.log(tournamentData);
+        return this.tournamentService.createTournament({...tournamentData, game: this.selectedGame});
+      } else throw new Error("form non valido");
+    })).subscribe({
+      next: (response) => {
+        console.log('Tournament created:', response);
+        this.loadTournaments();
+      },
+      error: (error) => {
+        console.error('Error creating tournament:', error);
+      }
+    })
   }
 
   getGameByName(name: string): void {
@@ -253,7 +261,13 @@ export class TournamentComponent implements OnInit {
   onGameChange(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
     const selectedGameName = selectElement?.value;
-    this.getGameByName(selectedGameName);
-    this.loadTeamsByGame(selectedGameName);  // Fetch teams based on the selected game
+    const selectedGame = this.availableGames.find(game => game.name === selectedGameName);
+  
+    if (selectedGame) {
+      this.getGameByName(selectedGameName);
+      this.loadTeamsByGame(selectedGame.id!);  // Passa l'ID del gioco selezionato
+    } else {
+      console.error('Selected game not found in available games');
+    }
   }
 }

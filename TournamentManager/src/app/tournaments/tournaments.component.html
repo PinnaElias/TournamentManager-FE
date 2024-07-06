@@ -35,10 +35,11 @@
           placeholder="Add a brief description!"></textarea>
       </div>
 
+      <!--formControlName="bracket"-->
       <div class="form-group mb-3">
-        <label for="bracketType" class="form-label text-light">Bracket Type</label>
-        <select id="bracketType" formControlName="bracketType" (change)="onBracketTypeChange($event)"
-          class="form-select" required>
+        <label for="bracket" class="form-label text-light">Bracket Type</label>
+        <select id="bracketType" (change)="onBracketTypeChange($event)"
+          class="form-select" >
           <option value="" disabled selected>Select tournament format</option>
           <option *ngFor="let type of bracketTypes" [value]="type">{{ type }}</option>
         </select>
@@ -47,7 +48,7 @@
       <!-- Nuova Sezione per la Selezione dei Team -->
       <div class="form-group mb-3">
         <label for="teams" class="form-label text-light">Select Participating Teams</label>
-        <select id="teams" formControlName="teams" class="form-select" multiple>
+        <select id="teams" formControlName="participants" class="form-select" multiple>
           <option *ngFor="let team of availableTeams" [value]="team.id">{{ team.name }}</option>
         </select>
       </div>
@@ -85,8 +86,8 @@
         <div class="modal-body">
           <form [formGroup]="bracketForm" (ngSubmit)="onBracketSubmit()">
             <div class="mb-3">
-              <label for="bracketType" class="form-label">Bracket Type</label>
-              <select id="bracketType" formControlName="bracketType" class="form-select"
+              <label for="bracket" class="form-label">Bracket Type</label>
+              <select id="bracketType" formControlName="bracket" class="form-select"
                 (change)="onBracketTypeChange($event)">
                 <option *ngFor="let type of bracketTypes" [value]="type">{{ type }}</option>
               </select>

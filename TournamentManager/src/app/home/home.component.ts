@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HomeService } from './home.service';
+import { TournamentService } from '../tournaments/tournament.service';
+import { GameService } from '../game/game.service';
+import { TeamService } from '../team/team.service';
 
 @Component({
   selector: 'app-home',
@@ -11,14 +14,19 @@ export class HomeComponent implements OnInit {
   filteredTournaments: any[] = [];
   searchTerm: string = '';
 
-  constructor(private homeService: HomeService) {}
+  constructor(private tournamentService: TournamentService,
+    private gameService:GameService,
+    private teamService: TeamService
+  ) {}
 
   ngOnInit(): void {
+    this.gameService.getAllGames();
     this.getTournaments();
   }
 
   getTournaments(): void {
-    this.homeService.getAllTournaments().subscribe(response => {
+    this.tournamentService.getAllTournaments().subscribe(response => {
+      console.log(response);
       this.tournaments = response.content;
       this.filteredTournaments = this.tournaments;
     });

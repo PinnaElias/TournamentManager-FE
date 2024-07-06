@@ -13,10 +13,19 @@
               <label for="avatar" class="text-light fw-bold">Avatar URL:</label>
               <input type="text" class="form-control" id="avatar" formControlName="avatar" required>
             </div>
+
+            <!--Aggiorna Game-->
             <div class="form-group mb-3">
               <label for="game" class="text-light fw-bold">Game:</label>
-              <input type="text" class="form-control" id="game" formControlName="game" required>
+              <select class="form-control" id="game" formControlName="game" required>
+                <option *ngFor="let game of games" [value]="game.id">{{ game.name }}</option>
+              </select>
+              <div *ngIf="updateForm.get('game')?.invalid && updateForm.get('game')?.touched" class="text-danger">
+                <div *ngIf="updateForm.get('game')?.errors?.['required']">Game is required.</div>
+              </div>
             </div>
+
+
             <div class="form-group mb-3">
               <label for="nationality" class="text-light fw-bold">Nationality:</label>
               <input type="text" class="form-control" id="nationality" formControlName="nationality" required>

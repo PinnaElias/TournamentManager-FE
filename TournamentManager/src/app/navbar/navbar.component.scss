@@ -20,5 +20,13 @@
   li {
     margin-right: 10px;
   }
+
+  .propic {
+    width: 85px;  // Imposta la larghezza dell'immagine
+    height: 85px;  // Imposta l'altezza dell'immagine
+    border-radius: 50%;  // Rende l'immagine tonda
+    object-fit: cover;  // Assicura che l'immagine riempia il contenitore senza distorsioni
+    display: block;  // Assicura che l'immagine sia un elemento block
+  }
   
 

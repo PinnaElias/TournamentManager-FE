@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TeamService } from '../team.service';
 import { Team } from 'src/app/models/team.model';
 import { ReactiveFormsModule } from '@angular/forms';
+import { GameService } from 'src/app/game/game.service';
+import { Game } from 'src/app/models/game.model';
 
 @Component({
   selector: 'app-update-team',
@@ -16,10 +18,12 @@ export class UpdateTeamComponent implements OnInit {
 
   updateForm: FormGroup;
   team!: Team;
-
+  games: Game[] = [];
+  
   constructor(
     private formBuilder: FormBuilder,
     private teamService: TeamService,
+    private gameService: GameService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -54,6 +58,15 @@ export class UpdateTeamComponent implements OnInit {
       console.error('Team ID parameter is null or undefined.');
       // Gestione dell'errore o reindirizzamento a una pagina di errore, se necessario
     }
+
+    this.gameService.getAllGames().subscribe(
+      games => {
+        this.games = games.content;
+      },
+      error => {
+        console.error('Error fetching games:', error);
+      }
+    );
   }
 
   onSubmit(): void {

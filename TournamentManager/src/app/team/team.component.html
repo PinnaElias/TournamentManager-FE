@@ -37,6 +37,16 @@
                   {{ member.username }}{{ i !== team.members.length - 1 ? ', ' : '' }}
                 </span>
               </h4>
+
+              <!-- Bottone per aggiungere l'utente corrente al team -->
+              <button 
+                *ngIf="currentUser && !currentUser.team" 
+                class="btn btn-outline-success mt-3" 
+                (click)="addUserToTeam(team.id)"
+              >
+                Send subscription request
+              </button>
+              
             </div>
           </div>
         </div>

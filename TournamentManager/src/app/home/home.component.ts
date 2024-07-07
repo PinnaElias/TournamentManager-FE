@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit {
   tournaments: any[] = [];
   filteredTournaments: any[] = [];
   searchTerm: string = '';
-  teamId: string = ''; // Assumi di avere il teamId
+  teamId: string | null = null;
   tournamentId: string = '';
 
   constructor(private tournamentService: TournamentService,
@@ -57,14 +57,21 @@ export class HomeComponent implements OnInit {
 
   registerTeam(tournamentId: string): void {
     if (!this.teamId) {
-      console.error('No team found for current user');
+      const errorMessage = 'No team found for current user';
+      console.error(errorMessage);
+      alert(errorMessage); // Mostra l'errore all'utente
       return;
     }
     this.tournamentService.addTeamToTournament(tournamentId, this.teamId).subscribe(() => {
-      console.log('Team registered successfully');
+      const successMessage = 'Team registered successfully';
+      console.log(successMessage);
+      alert(successMessage); // Mostra il successo all'utente
       // Puoi anche aggiungere logica aggiuntiva per aggiornare lo stato o notificare l'utente
     }, error => {
-      console.error('Error registering team:', error);
+      const errorMessage = 'Error registering team: ' + (error?.message || 'Unknown error');
+      console.error(errorMessage, error);
+      alert(errorMessage); // Mostra l'errore all'utente
     });
   }
+  
 }

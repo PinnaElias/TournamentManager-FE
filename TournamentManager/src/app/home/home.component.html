@@ -13,7 +13,7 @@
         <h4 class="card-text text-light">
           <small class="text-success">{{tournament.startingDate | date}} - {{tournament.prize}}</small>
         </h4>
-        <button (click)="registerTeam(tournament.id)" class="btn btn-success mt-3">Register Team</button>
+        <button (click)="registerTeam(tournament.id)" class="btn btn-success mt-3" [disabled]="!teamId">Register Team</button>
       </div>
     </div>
   </div>

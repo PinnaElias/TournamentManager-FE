@@ -85,4 +85,27 @@ export class TeamsComponent implements OnInit {
       }
     );
   }
+
+  addUserToTeam(teamId: string): void {
+    // assumo currentUser non sia null per il momento
+    if (this.currentUser?.id) {
+      this.teamService.addUserToTeam(teamId, this.currentUser.id).subscribe(
+        updatedTeam => {
+          console.log('User added to team successfully:', updatedTeam);
+          alert("You are now a part of this team!");
+          this.loadTeams();
+          this.loadCurrentUser(); // Ricarica l'utente per aggiornare le informazioni del team
+        },
+        error => {
+          // Log generico degli errori
+          console.error('An error occurred while adding user to team:', error);
+          alert('An error occurred.')
+        }
+      );
+    } else {
+      // Log se l'utente corrente è nullo
+      console.error('Current user is null. Cannot add user to team.');
+      alert('You must first Log In!')
+    }
+  }
 }

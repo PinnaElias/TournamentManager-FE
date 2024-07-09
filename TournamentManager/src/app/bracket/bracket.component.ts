@@ -1,23 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { BracketService } from './bracket.service';
-import { Bracket, CreateBracketRequestBody, UpdateBracketRequestBody, DeleteBracketResponseBody, BracketType } from '../models/bracket.model';
-import { Team } from '../models/team.model';
-import { Tournament } from '../models/tournament.model';
-
+import {
+  Bracket, CreateBracketRequestBody, UpdateBracketRequestBody,
+  DeleteBracketResponseBody, BracketType
+} from '../models/bracket.model';
 
 @Component({
   selector: 'app-bracket',
   templateUrl: './bracket.component.html',
   styleUrls: ['./bracket.component.scss']
 })
+
 export class BracketComponent implements OnInit {
   brackets: Bracket[] = [];
   newBracket: CreateBracketRequestBody = { bracketType: BracketType.SINGLE_ELIMINATION, participants: [] };
-  updateBracket: UpdateBracketRequestBody = { };
+  updateBracket: UpdateBracketRequestBody = {};
 
-  BracketType = BracketType; // Rendi accessibile l'enum nel template
+  BracketType = BracketType;
 
-  constructor(private bracketService: BracketService) {}
+  constructor(private bracketService: BracketService) { }
 
   ngOnInit() {
     this.getBrackets();

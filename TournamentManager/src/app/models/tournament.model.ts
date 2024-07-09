@@ -9,7 +9,7 @@ export interface Tournament {
   game?: Game;
   name: string;
   participants?: Team[];
- // bracket?: Bracket;
+  // bracket?: Bracket;
   tournamentState?: MatchState;
   tournamentManager?: User;
   description: string;

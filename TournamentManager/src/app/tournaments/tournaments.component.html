@@ -1,5 +1,4 @@
 <div class="container mt-5">
-  <!-- Sezione di Creazione del Torneo -->
   <div class="d-flex justify-content-center align-items-center mb-4">
     <h1 class="text-light">New Tournament</h1>
   </div>
@@ -38,8 +37,7 @@
       <!--formControlName="bracket"-->
       <div class="form-group mb-3">
         <label for="bracket" class="form-label text-light">Bracket Type</label>
-        <select id="bracketType" (change)="onBracketTypeChange($event)"
-          class="form-select" >
+        <select id="bracketType" (change)="onBracketTypeChange($event)" class="form-select">
           <option value="" disabled selected>Select tournament format</option>
           <option *ngFor="let type of bracketTypes" [value]="type">{{ type }}</option>
         </select>
@@ -72,10 +70,11 @@
         <label for="prize" class="form-label text-light">Prize</label>
         <input type="text" id="prize" formControlName="prize" class="form-control" placeholder="Inserisci il premio">
       </div>
-      <button type="submit" class="btn btn-success" >Crea Torneo</button> <!--[disabled]="!tournamentForm.valid"-->
+      <button type="submit" class="btn btn-success">Crea Torneo</button> <!--[disabled]="!tournamentForm.valid"-->
     </form>
   </div>
-  <!-- Modal for Bracket Creation -->
+
+  <!-- modale per creare i bracket -->
   <div #bracketModal class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">

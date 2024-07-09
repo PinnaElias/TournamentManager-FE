@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { HomeService } from './home.service';
 import { TournamentService } from '../tournaments/tournament.service';
 import { GameService } from '../game/game.service';
 import { TeamService } from '../team/team.service';
@@ -59,19 +58,17 @@ export class HomeComponent implements OnInit {
     if (!this.teamId) {
       const errorMessage = 'No team found for current user';
       console.error(errorMessage);
-      alert(errorMessage); // Mostra l'errore all'utente
+      alert(errorMessage); // Mostra l'errore
       return;
     }
     this.tournamentService.addTeamToTournament(tournamentId, this.teamId).subscribe(() => {
       const successMessage = 'Team registered successfully';
       console.log(successMessage);
-      alert(successMessage); // Mostra il successo all'utente
-      // Puoi anche aggiungere logica aggiuntiva per aggiornare lo stato o notificare l'utente
+      alert(successMessage); // Operazione andata a buon fine
     }, error => {
       const errorMessage = 'Error registering team: ' + (error?.message || 'Unknown error');
       console.error(errorMessage, error);
-      alert(errorMessage); // Mostra l'errore all'utente
+      alert(errorMessage); 
     });
   }
-  
 }

@@ -1,9 +1,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand text-light mx-3 TMan" href="#">
-    <img src="../../assets/icons8-tournament-96.png" alt="Tournament Manager Logo" class="d-inline-block align-top" style="width: 40px; height: 40px;">
+    <img src="../../assets/icons8-tournament-96.png" alt="Tournament Manager Logo" class="d-inline-block align-top"
+      style="width: 40px; height: 40px;">
     Tournament Manager
   </a>
-  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse ms-1" id="navbarNav">
@@ -32,7 +34,8 @@
       <ng-container *ngIf="currentUser; else loggedOut">
         <div class="nav-item d-flex align-items-center">
           <span class="nav-link text-light" style="font-size: 1.1em;">{{ currentUser.username }}</span>
-          <img *ngIf="currentUser.avatarUrl" [src]="currentUser.avatarUrl" alt="Profile Picture" class="ms-2 propic" style="width: 30px; height: 30px;">
+          <img *ngIf="currentUser.avatarUrl" [src]="currentUser.avatarUrl" alt="Profile Picture" class="ms-2 propic"
+            style="width: 30px; height: 30px;">
         </div>
       </ng-container>
       <ng-template #loggedOut>

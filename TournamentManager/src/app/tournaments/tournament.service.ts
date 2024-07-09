@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Tournament, CreateTournamentRequestBody, UpdateTournamentRequestBody, DeleteTournamentResponseBody } from '../models/tournament.model';
+import { Tournament, CreateTournamentRequestBody, UpdateTournamentRequestBody } from '../models/tournament.model';
 import { Team } from '../models/team.model';
 import { map } from 'rxjs/operators';
 import { Game } from '../models/game.model';
@@ -10,6 +10,7 @@ import { Page } from '../models/page.model';
 @Injectable({
   providedIn: 'root'
 })
+
 export class TournamentService {
   private baseUrl = 'http://localhost:8081/api/tournaments';
   private teamUrl = 'http://localhost:8081/api/teams';

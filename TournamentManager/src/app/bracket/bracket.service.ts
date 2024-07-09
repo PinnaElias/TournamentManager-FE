@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Bracket, CreateBracketRequestBody, UpdateBracketRequestBody, DeleteBracketResponseBody } from '../models/bracket.model';
 
@@ -9,7 +9,7 @@ import { Bracket, CreateBracketRequestBody, UpdateBracketRequestBody, DeleteBrac
 export class BracketService {
   private baseUrl = 'http://localhost:8081/api/brackets';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAllBrackets(page: number, size: number, sortBy: string): Observable<any> {
     return this.http.get(`${this.baseUrl}?page=${page}&size=${size}&sortBy=${sortBy}`);

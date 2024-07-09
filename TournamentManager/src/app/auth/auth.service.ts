@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class AuthService {
 
-  private loginUrl = 'http://localhost:8081/api/auth/login'; 
+  private loginUrl = 'http://localhost:8081/api/auth/login';
   private registerUrl = 'http://localhost:8081/api/auth/register';
   private currentUserUrl = 'http://localhost:8081/api/users/me';
 

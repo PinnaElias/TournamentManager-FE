@@ -5,7 +5,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamService } from '../team.service';
 import { Team } from 'src/app/models/team.model';
-import { ReactiveFormsModule } from '@angular/forms';
 import { GameService } from 'src/app/game/game.service';
 import { Game } from 'src/app/models/game.model';
 
@@ -14,12 +13,13 @@ import { Game } from 'src/app/models/game.model';
   templateUrl: './update-team.component.html',
   styleUrls: ['./update-team.component.scss']
 })
+
 export class UpdateTeamComponent implements OnInit {
 
   updateForm: FormGroup;
   team!: Team;
   games: Game[] = [];
-  
+
   constructor(
     private formBuilder: FormBuilder,
     private teamService: TeamService,
@@ -37,8 +37,7 @@ export class UpdateTeamComponent implements OnInit {
 
   ngOnInit(): void {
     const teamId = this.route.snapshot.paramMap.get('id');
-  
-    // Verifica se teamId è null prima di chiamare getTeamById
+
     if (teamId) {
       this.teamService.getTeamById(teamId).subscribe(
         team => {
@@ -56,7 +55,6 @@ export class UpdateTeamComponent implements OnInit {
       );
     } else {
       console.error('Team ID parameter is null or undefined.');
-      // Gestione dell'errore o reindirizzamento a una pagina di errore, se necessario
     }
 
     this.gameService.getAllGames().subscribe(
@@ -72,37 +70,30 @@ export class UpdateTeamComponent implements OnInit {
   onSubmit(): void {
     if (this.updateForm.valid) {
       const teamId = this.route.snapshot.paramMap.get('id');
-      
+
       if (!teamId) {
         console.error('Team ID parameter is null or undefined.');
-        // Gestione dell'errore, ad esempio reindirizzamento a una pagina di errore
         return;
       }
-  
+
       const updatedTeamData = {
         name: this.updateForm.value.name,
         avatar: this.updateForm.value.avatar,
         game: this.updateForm.value.game,
         nationality: this.updateForm.value.nationality
       };
-  
+
       this.teamService.updateTeam(teamId, updatedTeamData).subscribe(
         updatedTeam => {
           console.log('Team updated successfully:', updatedTeam);
-          // Esegui altre azioni come il reindirizzamento alla pagina del team aggiornato
           this.router.navigate(['/teams', updatedTeam.id]);
         },
         error => {
           console.error('Error updating team:', error);
-          // Gestione dell'errore durante l'aggiornamento del team
-          // Puoi mostrare un messaggio all'utente o eseguire altre azioni necessarie
         }
       );
     } else {
       console.error('Form is invalid.');
-      // Gestione dell'errore per il form non valido
-      // Puoi mostrare un messaggio all'utente o eseguire altre azioni necessarie
     }
   }
-
 }

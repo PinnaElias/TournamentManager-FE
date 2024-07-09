@@ -8,6 +8,7 @@ import { Page } from '../models/page.model';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
+
 export class GameComponent implements OnInit {
   gamesPage!: Page<Game>;
 

@@ -7,6 +7,7 @@ import { User } from '../models/user.model';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
+
 export class NavbarComponent implements OnInit {
   currentUser: User | null = null;
 

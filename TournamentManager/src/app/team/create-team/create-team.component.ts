@@ -8,13 +8,14 @@ import { User } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/auth/auth.service';
 import { GameService } from 'src/app/game/game.service';
 import { Game } from 'src/app/models/game.model';
-import { Team, CreateTeamRequestBody, UpdateTeamRequestBody } from 'src/app/models/team.model';
+import { Team, CreateTeamRequestBody } from 'src/app/models/team.model';
 
 @Component({
   selector: 'app-create-team',
   templateUrl: './create-team.component.html',
   styleUrls: ['./create-team.component.scss']
 })
+
 export class CreateTeamComponent implements OnInit {
 
   createForm: FormGroup;

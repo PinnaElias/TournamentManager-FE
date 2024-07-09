@@ -1,24 +1,23 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Tournament, CreateTournamentRequestBody, UpdateTournamentRequestBody } from 'src/app/models/tournament.model';
+import { Tournament, CreateTournamentRequestBody } from 'src/app/models/tournament.model';
 import { TournamentService } from './tournament.service';
 import { BracketType } from '../models/bracket.model';
 import { Team } from '../models/team.model';
-import { CreateBracketRequestBody, UpdateBracketRequestBody } from '../models/bracket.model';
+import { CreateBracketRequestBody } from '../models/bracket.model';
 import { GameService } from '../game/game.service';
 import { Game } from '../models/game.model';
 import { BracketService } from '../bracket/bracket.service';
 import { TeamService } from '../team/team.service';
 import { AuthService } from '../auth/auth.service';
 import { switchMap } from 'rxjs';
-import { error } from 'jquery';
-
 
 @Component({
   selector: 'app-tournament',
   templateUrl: './tournaments.component.html',
   styleUrls: ['./tournaments.component.scss']
 })
+
 export class TournamentComponent implements OnInit {
   tournaments: Tournament[] = [];
   bracketTypes: BracketType[] = [
@@ -31,11 +30,11 @@ export class TournamentComponent implements OnInit {
   availableGames: Game[] = [];
   tournamentForm: FormGroup;
   bracketForm: FormGroup;
-  gameName: string = '';  // Aggiungi una variabile per memorizzare il nome del gioco
-  selectedGame?: Game;  // Aggiungi una variabile per memorizzare il gioco selezionato
+  gameName: string = '';  // memorizza il nome del gioco
+  selectedGame?: Game;  // memorizza il gioco selezionato
   bracketParticipants: Team[] = [];
   selectedTeams: Team[] = [];  // Squadre selezionate per il bracket
-  selectedWinner?: Team;  // Vincitore del bracket
+  selectedWinner?: Team; //Utile per le implementazioni della prossima versione
 
   @ViewChild('bracketModal') bracketModal!: ElementRef<HTMLDivElement>;
 
@@ -51,7 +50,6 @@ export class TournamentComponent implements OnInit {
       name: ['', Validators.required],
       avatar: [''],
       description: [''],
-      
       participants: [[]],
       startingDate: [''],
       endingDate: [''],
@@ -62,7 +60,7 @@ export class TournamentComponent implements OnInit {
 
     this.bracketForm = this.fb.group({
       bracket: [''],
-      participants: [[]],  // Lista vuota di partecipanti
+      participants: [[]],
       winner: [undefined as Team | undefined],
       losers: [[]]
     });
@@ -78,7 +76,7 @@ export class TournamentComponent implements OnInit {
         console.log('Available teams:', this.availableTeams);
       },
       error: (error) => {
-        console.error('Error fetching teams:', error);  // Log dell'errore
+        console.error('Error fetching teams:', error);
       }
     });
 
@@ -100,22 +98,22 @@ export class TournamentComponent implements OnInit {
   onBracketTypeChange(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
     const selectedBracketType = selectElement?.value as BracketType;
-  
+
     if (selectedBracketType) {
       this.tournamentForm.patchValue({ bracketType: selectedBracketType });
       this.createBracketForType(selectedBracketType);
     }
   }
-  
+
 
   createBracketForType(type: BracketType): void {
     this.bracketForm.patchValue({
       bracketType: type,
-      participants: [],  // Lista vuota di partecipanti
-      winner: undefined,  // Nessun vincitore inizialmente
-      losers: []  // Lista vuota di perdenti
+      participants: [],
+      winner: undefined,  // nessun vincitore inizialmente
+      losers: []  // lista vuota per gli sconfitti
     });
-    this.selectedTeams = [];  // Pulisci la lista delle squadre selezionate
+    this.selectedTeams = [];  // pulizia della lista delle squadre selezionate
 
     if (this.bracketModal?.nativeElement) {
       const modalElement = this.bracketModal.nativeElement;
@@ -131,7 +129,7 @@ export class TournamentComponent implements OnInit {
       }
     }
   }
-  
+
   hideBracketModal(): void {
     if (this.bracketModal?.nativeElement) {
       const modalElement = this.bracketModal.nativeElement;
@@ -153,8 +151,8 @@ export class TournamentComponent implements OnInit {
     if (this.bracketForm.valid) {
       const bracketData: CreateBracketRequestBody = {
         bracketType: this.bracketForm.get('bracketType')?.value as BracketType,
-        participants: this.bracketForm.get('participants')?.value || [],  // Usa i partecipanti selezionati
-        tournament: undefined,  // Associa il torneo successivamente
+        participants: this.bracketForm.get('participants')?.value || [],  // usa i partecipanti selezionati
+        tournament: undefined,  // associa il torneo successivamente
       };
 
       this.bracketService.createBracket(bracketData).subscribe({
@@ -174,7 +172,7 @@ export class TournamentComponent implements OnInit {
   onAddTeamToBracket(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const selectedTeamIds = Array.from(selectElement.selectedOptions)
-    .map(option => (option as HTMLOptionElement).value);
+      .map(option => (option as HTMLOptionElement).value);
 
     selectedTeamIds.forEach(id => {
       const team = this.availableTeams.find(t => t.id === id);
@@ -184,10 +182,9 @@ export class TournamentComponent implements OnInit {
     });
 
     this.bracketForm.patchValue({ participants: this.bracketParticipants });
-    // Clear the selected options in the dropdown after adding the teams
-    selectElement.selectedIndex = -1;  // Reset selection
+    selectElement.selectedIndex = -1;
   }
-  
+
   onRemoveTeamFromBracket(team: Team): void {
     this.bracketParticipants = this.bracketParticipants.filter(t => t.id !== team.id);
     this.bracketForm.patchValue({ participants: this.bracketParticipants });
@@ -204,14 +201,15 @@ export class TournamentComponent implements OnInit {
 
   onSubmit(): void {
     this.authservice.getCurrentUser().pipe(switchMap((user) => {
-      if (this.tournamentForm.valid) { 
+      if (this.tournamentForm.valid) {
         const tournamentData: CreateTournamentRequestBody = this.tournamentForm.value;
         console.log(tournamentData);
-        return this.tournamentService.createTournament({...tournamentData, game: this.selectedGame});
+        return this.tournamentService.createTournament({ ...tournamentData, game: this.selectedGame });
       } else throw new Error("form non valido");
     })).subscribe({
       next: (response) => {
         console.log('Tournament created:', response);
+        alert('Tournament created!');
         this.loadTournaments();
       },
       error: (error) => {
@@ -225,7 +223,6 @@ export class TournamentComponent implements OnInit {
       next: (game) => {
         this.selectedGame = game;
         console.log('Game fetched by name:', this.selectedGame);
-        // Aggiungi il codice per gestire il gioco ottenuto, ad esempio:
         this.tournamentForm.patchValue({ game: this.selectedGame?.name });  // Usa il nome del gioco
       },
       error: (error) => {
@@ -262,7 +259,7 @@ export class TournamentComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     const selectedGameName = selectElement?.value;
     const selectedGame = this.availableGames.find(game => game.name === selectedGameName);
-  
+
     if (selectedGame) {
       this.getGameByName(selectedGameName);
       this.loadTeamsByGame(selectedGame.id!);  // Passa l'ID del gioco selezionato

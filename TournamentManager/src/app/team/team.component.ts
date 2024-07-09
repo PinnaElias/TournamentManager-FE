@@ -10,6 +10,7 @@ import { User } from '../models/user.model';
   templateUrl: './team.component.html',
   styleUrls: ['./team.component.scss']
 })
+
 export class TeamsComponent implements OnInit {
   isExpanded = false;
   teams: Team[] = [];
@@ -97,13 +98,11 @@ export class TeamsComponent implements OnInit {
           this.loadCurrentUser(); // Ricarica l'utente per aggiornare le informazioni del team
         },
         error => {
-          // Log generico degli errori
           console.error('An error occurred while adding user to team:', error);
           alert('An error occurred.')
         }
       );
     } else {
-      // Log se l'utente corrente è nullo
       console.error('Current user is null. Cannot add user to team.');
       alert('You must first Log In!')
     }

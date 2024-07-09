@@ -1,8 +1,9 @@
+//Da implementare nella prossima versione
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatchService } from './match.service';
 import { TournamentService } from '../tournaments/tournament.service';
-import { TeamService } from '../team/team.service';
 import { BracketService } from '../bracket/bracket.service';
 import { Match, UpdateMatchRequestBody, CreateMatchRequestBody, MatchState } from '../models/match.model';
 import { Tournament} from '../models/tournament.model';
@@ -52,9 +53,8 @@ export class MatchComponent implements OnInit {
   }
 
   loadTeams(): void {
-    // Assuming there is a team service to fetch teams
     // this.teamService.getAllTeams().subscribe(teams => this.teams = teams);
-  }
+  } 
 
   loadTournaments(): void {
     this.tournamentService.getAllTournaments().subscribe(page => this.tournaments = page.content);

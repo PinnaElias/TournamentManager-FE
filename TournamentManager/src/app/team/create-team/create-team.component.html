@@ -32,7 +32,8 @@
             <div class="form-group mb-3">
               <label for="nationality" class="text-light fw-bold">Nationality:</label>
               <input type="text" class="form-control" id="nationality" formControlName="nationality" required>
-              <div *ngIf="createForm.get('nationality')?.invalid && createForm.get('nationality')?.touched" class="text-danger">
+              <div *ngIf="createForm.get('nationality')?.invalid && createForm.get('nationality')?.touched"
+                class="text-danger">
                 <div *ngIf="createForm.get('nationality')?.errors?.['required']">Nationality is required.</div>
               </div>
             </div>

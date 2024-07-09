@@ -18,9 +18,9 @@ const routes: Routes = [
   { path: 'games', component: GameComponent },
   { path: 'team', component: TeamsComponent },
   { path: 'team-create', component: CreateTeamComponent },
-  { path: 'team-update/:id', component: UpdateTeamComponent }, 
-  { path: 'bracket', component: BracketComponent},
-  { path: '**', redirectTo: '' }  
+  { path: 'team-update/:id', component: UpdateTeamComponent },
+  { path: 'bracket', component: BracketComponent },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

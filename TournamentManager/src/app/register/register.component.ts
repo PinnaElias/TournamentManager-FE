@@ -13,16 +13,19 @@ export class RegisterComponent implements OnInit {
   firstName: string = '';
   lastName: string = '';
   email: string = '';
-  preferredRole: Role = Role.OFFENSIVE;  // Valore di default
+  preferredRole: Role = Role.FLEXIBLE;  // valore predefinito, in caso di errore riporta su OFFENSIVE
   nationality: string = '';
   avatarUrl: string = '';
   roles: Role[] = [Role.OFFENSIVE, Role.DEFENSIVE, Role.SUPPORT, Role.CARRY, Role.FLEXIBLE];
+
+  // Per il Demo day la creazione dell'utente sarà impostata su Admin di default,
+  // per permettere lo showcase delle funzionalità
   userRole: UserRole = UserRole.USER;  // Impostato a "USER" per default
-  errorMessage: string = '';  // Aggiunto per gestire i messaggi di errore
+  errorMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   onSubmit(): void {
     const newUser: CreateUserRequestBody = {
@@ -34,7 +37,7 @@ export class RegisterComponent implements OnInit {
       preferredRole: this.preferredRole,
       nationality: this.nationality,
       avatarUrl: this.avatarUrl,
-      userRole: this.userRole,  // USER è predefinito
+      userRole: this.userRole
     };
 
     this.authService.register(newUser).subscribe({
